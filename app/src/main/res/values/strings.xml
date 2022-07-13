@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Shows-Les-Dominik</string>
     <string name="app_logo">Shows</string>
+    <string name="login_title">Login</string>
+    <string name="login_message">In order to continue please log in.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_button">Login</string>
 </resources>
