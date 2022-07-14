@@ -10,4 +10,5 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
     <color name="background_purple">#3D1D72</color>
     <color name="disabled_button_purple">#7C6C96</color>
+    <color name="welcome_text">#808080</color>
 </resources>

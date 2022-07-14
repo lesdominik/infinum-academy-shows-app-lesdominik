@@ -14,5 +14,8 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        val splitEmail = intent.extras?.getString("EMAIL")?.split("@")
+        binding.welcomeText.text = "Welcome, " + (splitEmail?.get(0) ?: "")
     }
 }
