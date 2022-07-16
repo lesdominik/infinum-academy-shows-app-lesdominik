@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import androidx.core.view.isEmpty
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
@@ -26,40 +27,46 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
         var emailCorrect = false
         var passwordCorrect = false
-        val emailPattern = Regex("""^.+@.+\..+$""")
 
-        binding.emailTextField.editText?.doAfterTextChanged {
-            if (it.toString().isEmpty()) {
-                binding.emailTextField.error = null
-                binding.loginButton.isEnabled = false
-                emailCorrect = false
-            } else if (emailPattern.matches(it.toString())) {
-                binding.emailTextField.error = null
-                emailCorrect = true
-                if (passwordCorrect) binding.loginButton.isEnabled = true else binding.loginButton.isEnabled = false
-            } else {
-                binding.emailTextField.error = "Invalid email address"
-                binding.loginButton.isEnabled = false
-                emailCorrect = false
+        binding.emailEdiText.doAfterTextChanged {
+
+            when {
+                it.toString().isEmpty() -> {
+                    binding.emailTextField.error = null
+                    emailCorrect = false
+                }
+                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
+                    binding.emailTextField.error = null
+                    emailCorrect = true
+                }
+                else -> {
+                    binding.emailTextField.error = "Invalid email address"
+                    emailCorrect = false
+                }
             }
+            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
-        binding.passwordTextField.editText?.doAfterTextChanged {
-            if (it.toString().isEmpty()) {
-                binding.passwordTextField.error = null
-                binding.loginButton.isEnabled = false
-                passwordCorrect = false
-            } else if (it.toString().length < 6) {
-                binding.passwordTextField.error = "Minimum password length is 6 characters"
-                binding.loginButton.isEnabled = false
-                passwordCorrect = false
-            } else {
-                binding.passwordTextField.error = null
-                passwordCorrect = true
-                if (emailCorrect) binding.loginButton.isEnabled = true else binding.loginButton.isEnabled = false
+        binding.passwordEditText.doAfterTextChanged {
+
+            when {
+                it.toString().isEmpty() -> {
+                    binding.passwordTextField.error = null
+                    passwordCorrect = false
+                }
+                it.toString().length < 6 -> {
+                    binding.passwordTextField.error = "Minimum password length is 6 characters"
+                    passwordCorrect = false
+                }
+                else -> {
+                    binding.passwordTextField.error = null
+                    passwordCorrect = true
+                }
             }
+            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
 
