@@ -27,6 +27,7 @@ class ShowsAdapter(
         fun bind(item: Show) {
             binding.showItemTitle.text = item.name
             binding.showItemImage.setImageResource(item.imageResourceId)
+            binding.showItemDescription.text = item.description
 
             binding.cardContainer.setOnClickListener {
                 onItemClickCallback(item)
