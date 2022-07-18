@@ -27,7 +27,7 @@ class ShowsActivity : AppCompatActivity() {
 
         initShowsRecycler()
 
-        binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
             when {
                 isChecked -> {
                     binding.showsRecycler.visibility = android.view.View.GONE
@@ -43,7 +43,7 @@ class ShowsActivity : AppCompatActivity() {
 
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(shows) { show ->
-            Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
         }
 
         binding.showsRecycler.layoutManager = LinearLayoutManager(this)
