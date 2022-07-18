@@ -21,11 +21,10 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.loginButton.setOnClickListener {
-            val intent = Intent(this, WelcomeActivity::class.java)
-            intent.putExtra("EMAIL", binding.emailTextField.editText?.text.toString())
-            startActivity(intent)
-        }
+//        binding.loginButton.setOnClickListener {
+//            val intent = Intent(this, WelcomeActivity::class.java)
+//            startActivity(intent)
+//        }
 
 
         var emailCorrect = false
