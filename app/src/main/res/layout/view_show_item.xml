@@ -22,7 +22,7 @@
                 android:id="@+id/showItemImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:src="@drawable/ic_office"
+                tools:src="@drawable/the_office"
                 android:scaleType="centerCrop"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
