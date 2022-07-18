@@ -16,7 +16,7 @@
         android:fontFamily="@font/roboto_bold"
         android:text="@string/shows_title"
         android:textColor="@color/black"
-        android:textSize="36dp" />
+        android:textSize="36sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
