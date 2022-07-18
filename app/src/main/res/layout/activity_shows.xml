@@ -19,7 +19,9 @@
         android:textSize="36sp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/showsRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/view_show_item"/>
 
 </LinearLayout>
