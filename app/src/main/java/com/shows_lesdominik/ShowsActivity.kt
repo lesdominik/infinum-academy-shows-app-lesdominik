@@ -11,9 +11,9 @@ import ui.ShowsAdapter
 class ShowsActivity : AppCompatActivity() {
 
     private val shows = listOf(
-        Show("The Office", R.drawable.the_office),
-        Show("Stranger Things", R.drawable.stranger_things),
-        Show("Krv nije voda", R.drawable.krv_nije_voda)
+        Show("theOffice","The Office", R.drawable.the_office),
+        Show("strangerThings","Stranger Things", R.drawable.stranger_things),
+        Show("krvNijeVoda","Krv nije voda", R.drawable.krv_nije_voda)
     )
 
     private lateinit var binding: ActivityShowsBinding
@@ -26,6 +26,19 @@ class ShowsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initShowsRecycler()
+
+        binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            when {
+                isChecked -> {
+                    binding.showsRecycler.visibility = android.view.View.GONE
+                    binding.noShowsView.visibility = android.view.View.VISIBLE
+                }
+                else -> {
+                    binding.showsRecycler.visibility = android.view.View.VISIBLE
+                    binding.noShowsView.visibility = android.view.View.GONE
+                }
+            }
+        }
     }
 
     private fun initShowsRecycler() {
