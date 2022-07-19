@@ -47,6 +47,7 @@ class ShowsActivity : AppCompatActivity() {
             val intent = Intent(this, ShowDetailsActivity::class.java)
             intent.putExtra("NAME", show.name)
             intent.putExtra("PICTURE", R.drawable.the_office_full)
+            intent.putExtra("DETAILS", show.description)
             startActivity(intent)
         }
 

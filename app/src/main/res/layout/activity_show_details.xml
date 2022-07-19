@@ -80,10 +80,12 @@
                 app:layout_constraintTop_toBottomOf="@id/showDetails" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reviewRecycle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
+                android:visibility="visible"
+                tools:listitem="@layout/item_review"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_max="240dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +98,7 @@
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/show_no_reviews"
                 android:textSize="17sp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/showReviewsTitle" />
