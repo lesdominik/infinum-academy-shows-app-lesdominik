@@ -12,4 +12,5 @@
     <color name="disabled_button_purple">#7C6C96</color>
     <color name="welcome_text">#808080</color>
     <color name="button_purple">#52368C</color>
+    <color name="light_grey">#999999</color>
 </resources>

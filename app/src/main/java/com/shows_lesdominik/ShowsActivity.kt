@@ -3,6 +3,7 @@ package com.shows_lesdominik
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shows_lesdominik.databinding.ActivityShowsBinding
 import model.Show
@@ -32,12 +33,12 @@ class ShowsActivity : AppCompatActivity() {
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
             when {
                 isChecked -> {
-                    binding.showsRecycler.visibility = android.view.View.GONE
-                    binding.noShowsView.visibility = android.view.View.VISIBLE
+                    binding.showsRecycler.isVisible = false
+                    binding.noShowsView.isVisible = true
                 }
                 else -> {
-                    binding.showsRecycler.visibility = android.view.View.VISIBLE
-                    binding.noShowsView.visibility = android.view.View.GONE
+                    binding.showsRecycler.isVisible = true
+                    binding.noShowsView.isVisible = false
                 }
             }
         }

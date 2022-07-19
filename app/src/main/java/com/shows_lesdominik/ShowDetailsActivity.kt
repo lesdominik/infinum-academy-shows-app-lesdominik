@@ -3,6 +3,8 @@ package com.shows_lesdominik
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -80,5 +82,12 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private fun addReviewToList(rating: Int, comment: String?) {
         adapter.addItem(Review(username, R.drawable.ic_person, rating, comment))
+        binding.noReviewsText.isVisible = false
+        binding.reviewRecycle.isVisible = true
+        binding.reviewDetails.isVisible = true
+        binding.reviewRatingBar.isVisible = true
+
+        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
+        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 }
