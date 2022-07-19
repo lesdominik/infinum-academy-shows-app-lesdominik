@@ -3,7 +3,6 @@ package com.shows_lesdominik
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shows_lesdominik.databinding.ActivityShowsBinding
 import model.Show
@@ -19,6 +18,7 @@ class ShowsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShowsBinding
     private lateinit var adapter: ShowsAdapter
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +26,7 @@ class ShowsActivity : AppCompatActivity() {
         binding = ActivityShowsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        username = intent.extras?.getString("USERNAME").toString()
         initShowsRecycler()
 
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
@@ -45,6 +46,7 @@ class ShowsActivity : AppCompatActivity() {
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(shows) { show ->
             val intent = Intent(this, ShowDetailsActivity::class.java)
+            intent.putExtra("USERNAME", username)
             intent.putExtra("NAME", show.name)
             intent.putExtra("PICTURE", R.drawable.the_office_full)
             intent.putExtra("DETAILS", show.description)

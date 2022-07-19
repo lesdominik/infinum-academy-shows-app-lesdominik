@@ -23,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
             val intent = Intent(this, ShowsActivity::class.java)
+            intent.putExtra("USERNAME",
+                binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
+            )
             startActivity(intent)
         }
 
