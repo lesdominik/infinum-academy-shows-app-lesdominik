@@ -8,4 +8,6 @@
     <string name="login_button">Login</string>
     <string name="shows_title">Shows</string>
     <string name="review_button">Write a review</string>
+    <string name="show_reviews">Reviews</string>
+    <string name="show_no_reviews">No reviews yet.</string>
 </resources>

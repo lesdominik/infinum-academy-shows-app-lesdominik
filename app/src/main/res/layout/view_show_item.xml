@@ -24,7 +24,8 @@
                 android:id="@+id/showItemImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 tools:src="@drawable/the_office" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
