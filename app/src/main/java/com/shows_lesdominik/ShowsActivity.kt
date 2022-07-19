@@ -1,5 +1,6 @@
 package com.shows_lesdominik
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -43,7 +44,10 @@ class ShowsActivity : AppCompatActivity() {
 
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(shows) { show ->
-//            Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ShowDetailsActivity::class.java)
+            intent.putExtra("NAME", show.name)
+            intent.putExtra("PICTURE", R.drawable.the_office_full)
+            startActivity(intent)
         }
 
         binding.showsRecycler.layoutManager = LinearLayoutManager(this)
