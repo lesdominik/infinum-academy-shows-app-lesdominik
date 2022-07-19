@@ -10,4 +10,7 @@
     <string name="review_button">Write a review</string>
     <string name="show_reviews">Reviews</string>
     <string name="show_no_reviews">No reviews yet.</string>
+    <string name="dialog_title">Write a review</string>
+    <string name="review_comment">Comment</string>
+    <string name="submit_button">Submit</string>
 </resources>
