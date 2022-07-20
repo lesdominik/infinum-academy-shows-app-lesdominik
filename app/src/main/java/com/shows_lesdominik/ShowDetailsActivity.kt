@@ -28,7 +28,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.showTitle.text = intent.extras?.getString("NAME")
-        intent.extras?.getInt("PICTURE")?.let { binding.fullImage.setImageResource(it) }
+        intent.extras?.getInt("PICTURE")?.let { binding.detailsImage.setImageResource(it) }
         binding.showDetails.text = intent.extras?.getString("DETAILS")
         username = intent.extras?.getString("USERNAME").toString()
 

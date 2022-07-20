@@ -49,7 +49,7 @@ class ShowsActivity : AppCompatActivity() {
             val intent = Intent(this, ShowDetailsActivity::class.java)
             intent.putExtra("USERNAME", username)
             intent.putExtra("NAME", show.name)
-            intent.putExtra("PICTURE", R.drawable.the_office_full)
+            intent.putExtra("PICTURE", show.imageResourceId)
             intent.putExtra("DETAILS", show.description)
             startActivity(intent)
         }

@@ -35,24 +35,33 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/fullImage"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/detailsImageCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="24dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
+                app:cardCornerRadius="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/the_office_full" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/detailsImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    tools:src="@drawable/the_office" />
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/showDetails"
@@ -64,7 +73,7 @@
                 android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fullImage"
+                app:layout_constraintTop_toBottomOf="@id/detailsImageCard"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor" />
 
             <TextView
@@ -86,7 +95,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="placeholder"
+                android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/light_grey"
                 android:textSize="14sp"
@@ -125,13 +134,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:padding="56dp"
                 android:text="@string/show_no_reviews"
                 android:textSize="17sp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/showReviewsTitle" />
+                app:layout_constraintTop_toBottomOf="@id/showReviewsTitle"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -142,7 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginVertical="16dp"
         android:backgroundTint="@color/button_purple"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/review_button"
