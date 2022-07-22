@@ -1,34 +1,41 @@
 package com.shows_lesdominik
 
-import android.content.Intent
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
-import androidx.core.view.isEmpty
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
-import com.shows_lesdominik.databinding.ActivityLoginBinding
+import androidx.navigation.fragment.findNavController
+import com.shows_lesdominik.databinding.FragmentLoginBinding
 
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
 
-    lateinit var binding: ActivityLoginBinding
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() =_binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        setContentView(binding.root)
+        initListeners()
+    }
 
-        binding.loginButton.setOnClickListener {
-            val intent = Intent(this, ShowsActivity::class.java)
-            intent.putExtra("USERNAME",
-                binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
-            )
-            startActivity(intent)
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
+
+    private fun initListeners() {
 
         var emailCorrect = false
         var passwordCorrect = false
@@ -52,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
             binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
+
         binding.passwordEditText.doAfterTextChanged {
 
             when {
@@ -71,6 +79,12 @@ class LoginActivity : AppCompatActivity() {
             binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
+
+        binding.loginButton.setOnClickListener {
+            val username = binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
+            val directions = LoginFragmentDirections.toShowsFragment(username.toString())
+            findNavController().navigate(directions)
+        }
 
     }
 }
