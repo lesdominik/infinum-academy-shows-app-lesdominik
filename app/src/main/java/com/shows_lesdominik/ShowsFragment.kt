@@ -52,6 +52,9 @@ class ShowsFragment : Fragment() {
 
 
     private fun initListeners() {
+        binding.logoutButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
             when {
