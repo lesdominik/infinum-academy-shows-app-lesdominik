@@ -101,7 +101,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReviewToList(rating: Int, comment: String?) {
-        adapter.addItem(Review(username, R.drawable.ic_person, rating, comment))
+        adapter.addItem(Review(username, R.drawable.default_user, rating, comment))
         binding.noReviewsText.isVisible = false
         binding.reviewRecycle.isVisible = true
         binding.reviewDetails.isVisible = true

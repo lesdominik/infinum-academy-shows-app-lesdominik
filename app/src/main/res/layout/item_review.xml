@@ -12,14 +12,12 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
-        <ImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/userImage"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
-            tools:src="@drawable/ic_person"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:tint="@color/button_purple" />
+            tools:src="@drawable/default_user"
+            app:civ_border="false"/>
 
         <TextView
             android:id="@+id/userName"
