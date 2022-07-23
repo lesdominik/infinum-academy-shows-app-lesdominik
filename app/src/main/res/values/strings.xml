@@ -15,4 +15,5 @@
     <string name="submit_button">Submit</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="remember_me_checkbox">Remember me</string>
 </resources>
