@@ -1,10 +1,13 @@
 package com.shows_lesdominik
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import model.Show
 import ui.ShowsAdapter
+
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsFragment : Fragment() {
 
@@ -27,6 +32,14 @@ class ShowsFragment : Fragment() {
     private lateinit var adapter: ShowsAdapter
     private lateinit var username: String
     private val args by navArgs<ShowsFragmentArgs>()
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +66,9 @@ class ShowsFragment : Fragment() {
 
     private fun initListeners() {
         binding.logoutButton.setOnClickListener {
+            sharedPreferences.edit {
+                putBoolean(REMEMBER_ME_CHECKED, false)
+            }
             findNavController().popBackStack()
         }
 

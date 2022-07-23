@@ -1,19 +1,33 @@
 package com.shows_lesdominik
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.shows_lesdominik.databinding.FragmentLoginBinding
+
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
+private const val USERNAME = "USERNAME"
 
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() =_binding!!
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +39,13 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
+        if (rememberMeChecked) {
+            val username = sharedPreferences.getString(USERNAME, "")
+            val directions = LoginFragmentDirections.toShowsFragment(username!!)
+            findNavController().navigate(directions)
+        }
 
         initListeners()
     }
@@ -80,8 +101,21 @@ class LoginFragment : Fragment() {
         }
 
 
+        binding.rememberMeCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit {
+                putBoolean(REMEMBER_ME_CHECKED, isChecked)
+            }
+        }
+
+
         binding.loginButton.setOnClickListener {
             val username = binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
+            val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
+            if (rememberMeChecked) {
+                sharedPreferences.edit {
+                    putString(USERNAME, username)
+                }
+            }
             val directions = LoginFragmentDirections.toShowsFragment(username.toString())
             findNavController().navigate(directions)
         }
