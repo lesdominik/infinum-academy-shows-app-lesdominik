@@ -16,4 +16,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="remember_me_checkbox">Remember me</string>
+    <string name="logout_button">Logout</string>
+    <string name="change_photo">Change profile photo</string>
 </resources>
