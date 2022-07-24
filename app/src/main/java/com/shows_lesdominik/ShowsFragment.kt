@@ -12,6 +12,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.shows_lesdominik.databinding.DialogUserDetailsBinding
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import model.Show
 import ui.ShowsAdapter
@@ -30,7 +32,7 @@ class ShowsFragment : Fragment() {
     private val binding get() =_binding!!
 
     private lateinit var adapter: ShowsAdapter
-    private lateinit var username: String
+    private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -52,7 +54,7 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        username = args.username
+        userEmail = args.userEmail
 
         initShowsRecycler()
         initListeners()
@@ -65,12 +67,6 @@ class ShowsFragment : Fragment() {
 
 
     private fun initListeners() {
-        binding.logoutButton.setOnClickListener {
-            sharedPreferences.edit {
-                putBoolean(REMEMBER_ME_CHECKED, false)
-            }
-            findNavController().popBackStack()
-        }
 
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
             when {
@@ -85,16 +81,41 @@ class ShowsFragment : Fragment() {
             }
         }
 
+        binding.userIcon.setOnClickListener {
+            showUserDetailsBottomSheet()
+        }
+
     }
 
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(shows) { show ->
-            val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, username)
+            val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, userEmail)
             findNavController().navigate(directions)
         }
 
-        binding.showsRecycler.layoutManager = LinearLayoutManager(context)
+        binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
 
         binding.showsRecycler.adapter = adapter
+    }
+
+    private fun showUserDetailsBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext())
+
+        val bottomSheetBinding = DialogUserDetailsBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
+
+        bottomSheetBinding.userEmail.text = userEmail
+        bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
+
+        bottomSheetBinding.logoutButton.setOnClickListener {
+            sharedPreferences.edit {
+                putBoolean(REMEMBER_ME_CHECKED, false)
+            }
+            findNavController().popBackStack()
+
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
