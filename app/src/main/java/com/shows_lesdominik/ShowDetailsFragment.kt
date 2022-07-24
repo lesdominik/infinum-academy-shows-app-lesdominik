@@ -58,10 +58,10 @@ class ShowDetailsFragment : Fragment() {
     private fun initReviewsRecycler() {
         adapter = ReviewsAdapter(reviews)
 
-        binding.reviewRecycle.layoutManager = LinearLayoutManager(context)
+        binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
         binding.reviewRecycle.adapter = adapter
 
-        binding.reviewRecycle.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
     }
 
     private fun initListeners() {
@@ -75,7 +75,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun showAddReviewBottomSheet() {
-        val dialog = BottomSheetDialog(context!!)
+        val dialog = BottomSheetDialog(requireContext())
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)

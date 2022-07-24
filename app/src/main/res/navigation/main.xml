@@ -20,7 +20,7 @@
         tools:layout="@layout/fragment_shows">
 
         <argument
-            android:name="username"
+            android:name="userEmail"
             app:argType="string"/>
 
         <action

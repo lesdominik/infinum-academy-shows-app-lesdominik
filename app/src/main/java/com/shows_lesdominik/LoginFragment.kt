@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.shows_lesdominik.databinding.FragmentLoginBinding
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
-private const val USERNAME = "USERNAME"
+private const val USER_EMAIL = "USER_EMAIL"
 
 class LoginFragment : Fragment() {
 
@@ -42,8 +42,8 @@ class LoginFragment : Fragment() {
 
         val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
         if (rememberMeChecked) {
-            val username = sharedPreferences.getString(USERNAME, "")
-            val directions = LoginFragmentDirections.toShowsFragment(username!!)
+            val userEmail = sharedPreferences.getString(USER_EMAIL, "")
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail.toString())
             findNavController().navigate(directions)
         }
 
@@ -109,14 +109,12 @@ class LoginFragment : Fragment() {
 
 
         binding.loginButton.setOnClickListener {
-            val username = binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
-            val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
-            if (rememberMeChecked) {
-                sharedPreferences.edit {
-                    putString(USERNAME, username)
-                }
+            val userEmail = binding.emailEdiText.text.toString()
+            sharedPreferences.edit {
+                putString(USER_EMAIL, userEmail)
             }
-            val directions = LoginFragmentDirections.toShowsFragment(username.toString())
+
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
             findNavController().navigate(directions)
         }
 
