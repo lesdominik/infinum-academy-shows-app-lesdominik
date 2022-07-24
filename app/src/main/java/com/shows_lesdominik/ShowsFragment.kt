@@ -1,5 +1,6 @@
 package com.shows_lesdominik
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -108,14 +109,29 @@ class ShowsFragment : Fragment() {
         bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
 
         bottomSheetBinding.logoutButton.setOnClickListener {
-            sharedPreferences.edit {
-                putBoolean(REMEMBER_ME_CHECKED, false)
-            }
-            findNavController().popBackStack()
+            showAlertDialog()
 
             dialog.dismiss()
         }
 
         dialog.show()
+    }
+
+    private fun showAlertDialog() {
+        val alertDialog = AlertDialog.Builder(requireContext())
+
+        alertDialog.setMessage("Do you really want to log out?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                sharedPreferences.edit {
+                    putBoolean(REMEMBER_ME_CHECKED, false)
+                }
+                findNavController().popBackStack()
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.cancel()
+            }
+
+        alertDialog.show()
     }
 }
