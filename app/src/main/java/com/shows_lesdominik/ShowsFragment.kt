@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,18 +24,14 @@ private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsFragment : Fragment() {
 
-    private val shows = listOf(
-        Show("theOffice","The Office", R.drawable.the_office),
-        Show("strangerThings","Stranger Things", R.drawable.stranger_things),
-        Show("krvNijeVoda","Krv nije voda", R.drawable.krv_nije_voda)
-    )
-
     private var _binding: FragmentShowsBinding? = null
     private val binding get() =_binding!!
 
     private lateinit var adapter: ShowsAdapter
     private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
+
+    private val viewModel by viewModels<ShowsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -89,14 +86,16 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecycler() {
-        adapter = ShowsAdapter(shows) { show ->
-            val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, userEmail)
-            findNavController().navigate(directions)
+        viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
+            adapter = ShowsAdapter(shows) { show ->
+                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, userEmail)
+                findNavController().navigate(directions)
+            }
+            binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+            binding.showsRecycler.adapter = adapter
         }
 
-        binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
-
-        binding.showsRecycler.adapter = adapter
     }
 
     private fun showUserDetailsBottomSheet() {
