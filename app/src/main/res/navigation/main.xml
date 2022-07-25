@@ -11,7 +11,9 @@
 
         <action
             android:id="@+id/toShowsFragment"
-            app:destination="@id/showsFragment"/>
+            app:destination="@id/showsFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
