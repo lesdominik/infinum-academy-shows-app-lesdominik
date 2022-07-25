@@ -2,8 +2,10 @@ package com.shows_lesdominik
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -106,6 +108,11 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.userEmail.text = userEmail
         bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
+
+        bottomSheetBinding.changeProfilePhoto.setOnClickListener {
+            val intent = Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA)
+            startActivity(intent)
+        }
 
         bottomSheetBinding.logoutButton.setOnClickListener {
             showAlertDialog()
