@@ -131,7 +131,7 @@ class ShowsFragment : Fragment() {
                 sharedPreferences.edit {
                     putBoolean(REMEMBER_ME_CHECKED, false)
                 }
-                findNavController().popBackStack()
+                findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()
             }
             .setNegativeButton("No") { dialog, _ ->

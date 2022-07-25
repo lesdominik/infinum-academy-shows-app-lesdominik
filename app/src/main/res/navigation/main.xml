@@ -28,6 +28,12 @@
         <action
             android:id="@+id/toFragmentShowDetails"
             app:destination="@id/fragmentShowDetails"/>
+
+        <action
+            android:id="@+id/toLoginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/showsFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
