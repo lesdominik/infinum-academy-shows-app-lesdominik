@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -22,16 +23,15 @@ import ui.ReviewsAdapter
 
 class ShowDetailsFragment : Fragment() {
 
-    private val reviews = emptyList<Review>()
-
     private var _binding: FragmentShowDetailsBinding? = null
     private val binding get() =_binding!!
 
     private lateinit var adapter: ReviewsAdapter
-    private lateinit var userEmail: String
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
     private lateinit var sharedPreferences: SharedPreferences
+
+    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +50,15 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.showTitle.text = args.showName
-        binding.detailsImage.setImageResource(args.pictureId)
-        binding.showDetails.text = args.details
+        viewModel.setShowDetails(args.showName, args.pictureId, args.details)
 
-        userEmail = args.userEmail
+        viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
+            binding.showTitle.text = show.name
+            binding.detailsImage.setImageResource(show.imageResourceId)
+            binding.showDetails.text = show.description
+        }
+
+        viewModel.getUsername(args.userEmail)
 
         initReviewsRecycler()
         initListeners()
@@ -67,12 +71,14 @@ class ShowDetailsFragment : Fragment() {
 
 
     private fun initReviewsRecycler() {
-        adapter = ReviewsAdapter(reviews)
+        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
+            adapter = ReviewsAdapter(reviews)
 
-        binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
-        binding.reviewRecycle.adapter = adapter
+            binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+            binding.reviewRecycle.adapter = adapter
 
-        binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        }
     }
 
     private fun initListeners() {
@@ -116,8 +122,9 @@ class ShowDetailsFragment : Fragment() {
         if (userImageUri.isNullOrEmpty()) {
             userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
         }
-        val username = userEmail.split("@")
-        adapter.addItem(Review(username[0], userImageUri, rating, comment))
+        viewModel.usernameLiveData.observe(viewLifecycleOwner) { username ->
+            adapter.addItem(Review(username, userImageUri, rating, comment))
+        }
         binding.noReviewsText.isVisible = false
         binding.reviewRecycle.isVisible = true
         binding.reviewDetails.isVisible = true
