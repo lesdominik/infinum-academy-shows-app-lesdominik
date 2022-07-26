@@ -54,7 +54,7 @@
             app:argType="string"/>
 
         <argument
-            android:name="username"
+            android:name="userEmail"
             app:argType="string"/>
     </fragment>
 

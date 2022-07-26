@@ -1,5 +1,8 @@
 package com.shows_lesdominik
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,8 +28,16 @@ class ShowDetailsFragment : Fragment() {
     private val binding get() =_binding!!
 
     private lateinit var adapter: ReviewsAdapter
-    private lateinit var username: String
+    private lateinit var userEmail: String
     private val args by navArgs<ShowDetailsFragmentArgs>()
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +54,7 @@ class ShowDetailsFragment : Fragment() {
         binding.detailsImage.setImageResource(args.pictureId)
         binding.showDetails.text = args.details
 
-        username = args.username
+        userEmail = args.userEmail
 
         initReviewsRecycler()
         initListeners()
@@ -101,7 +112,12 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReviewToList(rating: Int, comment: String?) {
-        adapter.addItem(Review(username, R.drawable.default_user, rating, comment))
+        var userImageUri = sharedPreferences.getString("URI", null)
+        if (userImageUri.isNullOrEmpty()) {
+            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
+        }
+        val username = userEmail.split("@")
+        adapter.addItem(Review(username[0], userImageUri, rating, comment))
         binding.noReviewsText.isVisible = false
         binding.reviewRecycle.isVisible = true
         binding.reviewDetails.isVisible = true

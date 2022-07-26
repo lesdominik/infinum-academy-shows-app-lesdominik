@@ -28,9 +28,10 @@
             android:layout_gravity="end"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/default_user"
+            android:scaleType="centerCrop"
             android:clickable="true"
-            app:civ_border="false"/>
+            app:civ_border="false"
+            tools:src="@drawable/default_user"/>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleButton"

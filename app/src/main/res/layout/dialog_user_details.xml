@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
+        android:scaleType="centerCrop"
         app:civ_border_color="@color/button_purple"
         app:civ_border_width="2dp"
         tools:src="@drawable/default_user"/>
