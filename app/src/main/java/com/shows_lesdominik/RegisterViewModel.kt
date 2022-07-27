@@ -20,12 +20,12 @@ class RegisterViewModel : ViewModel() {
         )
 
         ApiModule.retrofit.register(registerRequest)
-            .enqueue(object: Callback<RegisterResponse> {
-                override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+            .enqueue(object: Callback<LoginAndRegisterResponse> {
+                override fun onResponse(call: Call<LoginAndRegisterResponse>, response: Response<LoginAndRegisterResponse>) {
                     _registrationResultLiveData.value = response.isSuccessful
                 }
 
-                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                override fun onFailure(call: Call<LoginAndRegisterResponse>, t: Throwable) {
                     _registrationResultLiveData.value = false
                 }
             })

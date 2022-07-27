@@ -2,6 +2,7 @@ package com.shows_lesdominik
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.shows_lesdominik.databinding.FragmentLoginBinding
@@ -27,6 +29,7 @@ class LoginFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private val args by navArgs<LoginFragmentArgs>()
+    private val viewModel by viewModels<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +60,42 @@ class LoginFragment : Fragment() {
             findNavController().navigate(directions)
         }
 
+        ApiModule.initRetrofit(requireContext())
+
+        viewModel.loginResultLiveData.observe(viewLifecycleOwner) { loginSuccessful ->
+            loginOutcome(loginSuccessful)
+        }
+
         initListeners()
+        initLoginButton()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun loginOutcome(loginSuccessful: Boolean) = with(binding) {
+        if (loginSuccessful) {
+            val userEmail = emailEdiText.text.toString()
+            sharedPreferences.edit {
+                putString(USER_EMAIL, userEmail)
+            }
+
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
+            findNavController().navigate(directions)
+        } else {
+            loginButton.isEnabled = false
+            emailEdiText.setText("")
+            passwordEditText.setText("")
+            message.text = "Login failed. Please register or try again"
+            message.setTextColor(Color.RED)
+        }
     }
 
+    private fun initLoginButton() = with(binding) {
+        loginButton.setOnClickListener {
+            viewModel.onLoginButtonClicked(
+                email = emailEdiText.text.toString(),
+                password = passwordEditText.text.toString()
+            )
+        }
+    }
 
     private fun initListeners() {
 
@@ -90,20 +121,14 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.loginButton.setOnClickListener {
-            val userEmail = binding.emailEdiText.text.toString()
-            sharedPreferences.edit {
-                putString(USER_EMAIL, userEmail)
-            }
-
-            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
-            findNavController().navigate(directions)
-        }
-
-
         binding.registerTextButton.setOnClickListener {
             findNavController().navigate(R.id.toRegisterFragment)
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
