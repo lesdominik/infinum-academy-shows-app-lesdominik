@@ -58,46 +58,18 @@ class LoginFragment : Fragment() {
 
     private fun initListeners() {
 
-        var emailCorrect = false
-        var passwordCorrect = false
+        var emailNotEmpty = false
+        var passwordNotEmpty = false
 
         binding.emailEdiText.doAfterTextChanged {
-
-            when {
-                it.toString().isEmpty() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = false
-                }
-                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = true
-                }
-                else -> {
-                    binding.emailTextField.error = "Invalid email address"
-                    emailCorrect = false
-                }
-            }
-            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
+            emailNotEmpty = Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches()
+            binding.loginButton.isEnabled = emailNotEmpty && passwordNotEmpty
         }
 
 
         binding.passwordEditText.doAfterTextChanged {
-
-            when {
-                it.toString().isEmpty() -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = false
-                }
-                it.toString().length < 6 -> {
-                    binding.passwordTextField.error = "Minimum password length is 6 characters"
-                    passwordCorrect = false
-                }
-                else -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = true
-                }
-            }
-            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
+            passwordNotEmpty = it.toString().isNotEmpty()
+            binding.loginButton.isEnabled = emailNotEmpty && passwordNotEmpty
         }
 
 

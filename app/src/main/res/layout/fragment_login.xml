@@ -94,7 +94,6 @@
             android:hint="@string/email"
             android:textColorHint="@color/white"
             app:boxStrokeColor="@color/white"
-            app:errorEnabled="true"
             app:hintTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,13 +114,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:hint="@string/password"
             android:textColorHint="@color/white"
             app:boxStrokeColor="@color/white"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/white"
-            app:errorEnabled="true"
             app:hintTextColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -141,6 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
             android:text="@string/remember_me_checkbox"
             android:textColor="@color/white"
             android:fontFamily="@font/roboto_regular"
@@ -172,18 +171,21 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerTextButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
             android:text="@string/register_text_button"
             android:textAllCaps="false"
             android:fontFamily="@font/roboto_bold"
             android:textSize="17sp"
+            android:minHeight="0dp"
             android:textColor="@color/white"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/loginButton"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintVertical_bias="1.0"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
