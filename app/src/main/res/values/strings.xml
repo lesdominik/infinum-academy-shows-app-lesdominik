@@ -18,4 +18,7 @@
     <string name="remember_me_checkbox">Remember me</string>
     <string name="logout_button">Logout</string>
     <string name="change_photo">Change profile photo</string>
+    <string name="register_button">Register</string>
+    <string name="register_title">Register</string>
+    <string name="repeat_password">Repeat password</string>
 </resources>
