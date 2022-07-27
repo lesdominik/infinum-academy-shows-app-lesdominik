@@ -14,6 +14,17 @@
             app:destination="@id/showsFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/toRegisterFragment"
+            app:destination="@id/registerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.shows_lesdominik.RegisterFragment"
+        tools:layout="@layout/fragment_register">
+
     </fragment>
 
     <fragment

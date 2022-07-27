@@ -118,5 +118,10 @@ class LoginFragment : Fragment() {
             findNavController().navigate(directions)
         }
 
+
+        binding.registerTextButton.setOnClickListener {
+            findNavController().navigate(R.id.toRegisterFragment)
+        }
+
     }
 }

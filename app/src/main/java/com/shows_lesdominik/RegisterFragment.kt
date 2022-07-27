@@ -75,7 +75,7 @@ class RegisterFragment : Fragment() {
         }
 
 
-        binding.repeatPasswordEditText.doOnDetach {
+        binding.repeatPasswordEditText.doAfterTextChanged {
 
             when {
                 it.toString().isEmpty() -> {
@@ -97,7 +97,7 @@ class RegisterFragment : Fragment() {
 
 
         binding.registerButton.setOnClickListener {
-            
+
         }
     }
 
