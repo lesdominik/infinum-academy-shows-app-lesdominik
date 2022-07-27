@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.shows_lesdominik.databinding.FragmentLoginBinding
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
@@ -22,6 +25,8 @@ class LoginFragment : Fragment() {
     private val binding get() =_binding!!
 
     private lateinit var sharedPreferences: SharedPreferences
+
+    private val args by navArgs<LoginFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +44,11 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (args.afterRegistration) {
+            binding.title.text = "Registration successful!"
+            binding.registerTextButton.isVisible = false
+        }
 
         val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
         if (rememberMeChecked) {

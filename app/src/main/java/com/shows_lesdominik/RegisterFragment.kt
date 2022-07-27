@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnDetach
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -41,11 +42,16 @@ class RegisterFragment : Fragment() {
         initRegisterButton()
     }
 
-    private fun registrationOutcome(registrationSuccessful: Boolean) {
+    private fun registrationOutcome(registrationSuccessful: Boolean) = with(binding) {
         if (registrationSuccessful) {
-            findNavController().navigate(R.id.toLoginFragment)
+            val destination = RegisterFragmentDirections.toLoginFragment(true)
+            findNavController().navigate(destination)
         } else {
-
+            registerButton.isEnabled = false
+            emailEdiText.setText("")
+            passwordEditText.setText("")
+            repeatPasswordEditText.setText("")
+            errorMessage.isVisible = true
         }
     }
 

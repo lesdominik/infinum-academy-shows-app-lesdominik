@@ -9,6 +9,11 @@
         android:name="com.shows_lesdominik.LoginFragment"
         tools:layout="@layout/fragment_login">
 
+        <argument
+            android:name="afterRegistration"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+
         <action
             android:id="@+id/toShowsFragment"
             app:destination="@id/showsFragment"
