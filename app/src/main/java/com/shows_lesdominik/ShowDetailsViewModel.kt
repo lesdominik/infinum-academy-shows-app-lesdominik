@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import model.Review
-import model.Show
 
 class ShowDetailsViewModel : ViewModel() {
 
@@ -28,7 +27,7 @@ class ShowDetailsViewModel : ViewModel() {
         _usernameLiveData.value = splittedEmail[0]
     }
 
-    fun setShowDetails(name: String, imageResourceId: Int, description: String) {
-        _showDetailsLiveData.value = Show(name, name, imageResourceId, description)
-    }
+//    fun setShowDetails(name: String, imageResourceId: Int, description: String) {
+//        _showDetailsLiveData.value = Show(name, name, imageResourceId, description)
+//    }
 }

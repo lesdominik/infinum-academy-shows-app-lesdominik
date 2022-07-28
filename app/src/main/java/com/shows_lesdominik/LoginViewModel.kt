@@ -1,5 +1,6 @@
 package com.shows_lesdominik
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
@@ -16,7 +17,9 @@ class LoginViewModel : ViewModel() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    fun onLoginButtonClicked(email: String, password: String) {
+    fun onLoginButtonClicked(email: String, password: String, context: Context) {
+        sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+
         val loginRequest = LoginRequest(
             email = email,
             password = password
@@ -28,6 +31,7 @@ class LoginViewModel : ViewModel() {
                     _loginResultLiveData.value = response.isSuccessful
                     sharedPreferences.edit {
                         putString("ACCESS_TOKEN", response.headers()["access-token"])
+                        putString("CLIENT", response.headers()["client"])
                     }
                 }
 

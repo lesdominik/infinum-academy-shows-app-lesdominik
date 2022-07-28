@@ -22,7 +22,6 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import java.io.File
-import model.Show
 import ui.ShowsAdapter
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
@@ -34,7 +33,6 @@ class ShowsFragment : Fragment() {
 
     private lateinit var bottomSheetBinding: DialogUserDetailsBinding
 
-    private lateinit var adapter: ShowsAdapter
     private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
 
@@ -121,14 +119,13 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecycler() {
+        viewModel.getShows()
         viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
-            adapter = ShowsAdapter(shows) { show ->
-                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, userEmail)
+            binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
+                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.title, userEmail)
                 findNavController().navigate(directions)
             }
             binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
-
-            binding.showsRecycler.adapter = adapter
         }
 
     }

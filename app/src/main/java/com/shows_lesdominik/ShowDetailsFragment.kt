@@ -50,11 +50,11 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setShowDetails(args.showName, args.pictureId, args.details)
+//        viewModel.setShowDetails(args.showName, args.pictureId, args.details)
 
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showTitle.text = show.name
-            binding.detailsImage.setImageResource(show.imageResourceId)
+            binding.showTitle.text = show.title
+            binding.detailsImage.setImageURI(Uri.parse(show.imageUrl))
             binding.showDetails.text = show.description
         }
 

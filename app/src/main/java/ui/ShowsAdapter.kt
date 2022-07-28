@@ -1,10 +1,13 @@
 package ui
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.ViewShowItemBinding
-import model.Show
+import com.shows_lesdominik.Show
+import com.shows_lesdominik.ShowsFragment
 
 class ShowsAdapter(
     private var items: List<Show>,
@@ -25,12 +28,12 @@ class ShowsAdapter(
     inner class ShowViewHolder(private val binding: ViewShowItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Show) {
-            binding.showItemTitle.text = item.name
-            binding.showItemImage.setImageResource(item.imageResourceId)
+            binding.showItemTitle.text = item.title
+            Glide.with(binding.root).load(item.imageUrl).into(binding.showItemImage)
             binding.showItemDescription.text = item.description
 
             binding.cardContainer.setOnClickListener {
-                onItemClickCallback(item)
+//                onItemClickCallback(item)
             }
         }
     }

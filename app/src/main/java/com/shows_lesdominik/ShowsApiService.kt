@@ -12,4 +12,7 @@ interface ShowsApiService {
 
     @POST("/users/sign_in")
     fun signIn(@Body request: LoginRequest): Call<LoginAndRegisterResponse>
+
+    @GET("/shows")
+    fun getShows(): Call<ShowsResponse>
 }
