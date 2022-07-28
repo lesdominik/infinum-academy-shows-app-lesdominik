@@ -1,4 +1,4 @@
-package model
+package com.shows_lesdominik
 
 import androidx.annotation.DrawableRes
 

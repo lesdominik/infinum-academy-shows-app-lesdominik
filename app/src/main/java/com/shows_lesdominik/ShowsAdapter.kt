@@ -1,13 +1,10 @@
-package ui
+package com.shows_lesdominik
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.ViewShowItemBinding
-import com.shows_lesdominik.Show
-import com.shows_lesdominik.ShowsFragment
 
 class ShowsAdapter(
     private var items: List<Show>,

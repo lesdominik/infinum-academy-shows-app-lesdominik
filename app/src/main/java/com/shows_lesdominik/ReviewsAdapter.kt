@@ -1,4 +1,4 @@
-package ui
+package com.shows_lesdominik
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.shows_lesdominik.databinding.ItemReviewBinding
-import model.Review
-import java.text.DecimalFormat
 
 class ReviewsAdapter(
     private var items: List<Review>,

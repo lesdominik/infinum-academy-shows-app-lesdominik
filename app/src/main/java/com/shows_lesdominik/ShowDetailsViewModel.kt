@@ -3,7 +3,6 @@ package com.shows_lesdominik
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import model.Review
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

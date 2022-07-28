@@ -2,7 +2,6 @@ package com.shows_lesdominik
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,9 +17,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogAddReviewBinding
 import com.shows_lesdominik.databinding.FragmentShowDetailsBinding
-import com.shows_lesdominik.databinding.FragmentShowsBinding
-import model.Review
-import ui.ReviewsAdapter
 
 class ShowDetailsFragment : Fragment() {
 

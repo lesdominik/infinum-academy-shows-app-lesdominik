@@ -22,7 +22,6 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import java.io.File
-import ui.ShowsAdapter
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
