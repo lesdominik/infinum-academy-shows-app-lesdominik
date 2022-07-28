@@ -36,8 +36,7 @@ class AuthInterceptor(private val sharedPreferences: SharedPreferences) : Interc
         val uid = sharedPreferences.getString("USER_EMAIL", null)
         val client = sharedPreferences.getString("CLIENT", null)
         var request = chain.request()
-//        if (!accessToken.isNullOrEmpty()) {
-//        }
+
         request = request.newBuilder()
             .header("token-type", "Bearer")
             .header("access-token", accessToken.toString())

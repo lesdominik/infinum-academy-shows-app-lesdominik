@@ -33,7 +33,7 @@ class ShowsAdapter(
             binding.showItemDescription.text = item.description
 
             binding.cardContainer.setOnClickListener {
-//                onItemClickCallback(item)
+                onItemClickCallback(item)
             }
         }
     }

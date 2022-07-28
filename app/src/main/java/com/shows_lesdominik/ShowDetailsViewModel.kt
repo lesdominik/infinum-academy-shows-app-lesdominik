@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import model.Review
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ShowDetailsViewModel : ViewModel() {
 
@@ -23,11 +26,21 @@ class ShowDetailsViewModel : ViewModel() {
     }
 
     fun getUsername(email: String) {
-        val splittedEmail = email.split("@")
-        _usernameLiveData.value = splittedEmail[0]
+        val splitEmail = email.split("@")
+        _usernameLiveData.value = splitEmail[0]
     }
 
-//    fun setShowDetails(name: String, imageResourceId: Int, description: String) {
-//        _showDetailsLiveData.value = Show(name, name, imageResourceId, description)
-//    }
+    fun getShowDetails(showId: String) {
+        ApiModule.retrofit.getShowDetails(showId)
+            .enqueue(object: Callback<ShowDetailsResponse> {
+                override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
+                    _showDetailsLiveData.value = response.body()?.show
+                }
+
+                override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
 }

@@ -122,7 +122,7 @@ class ShowsFragment : Fragment() {
         viewModel.getShows()
         viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
             binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
-                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.title, userEmail)
+                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
                 findNavController().navigate(directions)
             }
             binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
@@ -148,12 +148,10 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.changeProfilePhoto.setOnClickListener {
            takeImage()
-
         }
 
         bottomSheetBinding.logoutButton.setOnClickListener {
             showAlertDialog()
-
             dialog.dismiss()
         }
 

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogAddReviewBinding
 import com.shows_lesdominik.databinding.FragmentShowDetailsBinding
@@ -50,11 +51,11 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewModel.setShowDetails(args.showName, args.pictureId, args.details)
+        viewModel.getShowDetails(args.showId)
 
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
             binding.showTitle.text = show.title
-            binding.detailsImage.setImageURI(Uri.parse(show.imageUrl))
+            Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
         }
 

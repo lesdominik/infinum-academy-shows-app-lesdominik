@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ShowsApiService {
 
@@ -15,4 +16,7 @@ interface ShowsApiService {
 
     @GET("/shows")
     fun getShows(): Call<ShowsResponse>
+
+    @GET("/shows/{id}")
+    fun getShowDetails(@Path("id") id: String): Call<ShowDetailsResponse>
 }
