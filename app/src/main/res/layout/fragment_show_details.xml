@@ -132,6 +132,7 @@
                 android:id="@+id/noReviewsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="40dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/show_no_reviews"
                 android:textSize="17sp"

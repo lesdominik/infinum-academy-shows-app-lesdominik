@@ -35,7 +35,6 @@ class ShowsFragment : Fragment() {
 
     private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
-
     private val viewModel by viewModels<ShowsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -91,43 +90,30 @@ class ShowsFragment : Fragment() {
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 
     private fun initListeners() {
-
-        binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
-            when {
-                isChecked -> {
-                    binding.showsRecycler.isVisible = false
-                    binding.noShowsView.isVisible = true
-                }
-                else -> {
-                    binding.showsRecycler.isVisible = true
-                    binding.noShowsView.isVisible = false
-                }
-            }
-        }
-
         binding.userIcon.setOnClickListener {
             showUserDetailsBottomSheet()
         }
-
     }
 
     private fun initShowsRecycler() {
         viewModel.getShows()
         viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
-            binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
-                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
-                findNavController().navigate(directions)
-            }
-            binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
-        }
+            if (shows.isEmpty()) {
+                binding.showsRecycler.isVisible = false
+                binding.noShowsView.isVisible = true
+            } else {
+                binding.showsRecycler.isVisible = true
+                binding.noShowsView.isVisible = false
 
+                binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
+                    val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
+                    findNavController().navigate(directions)
+                }
+                binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
     }
 
     private fun showUserDetailsBottomSheet() {
@@ -197,5 +183,11 @@ class ShowsFragment : Fragment() {
         }
 
         return FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

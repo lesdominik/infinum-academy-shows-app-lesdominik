@@ -18,6 +18,8 @@ class ShowsViewModel : ViewModel() {
                 override fun onResponse(call: Call<ShowsResponse>, response: Response<ShowsResponse>) {
                     if (response.isSuccessful) {
                         _showsLiveData.value = response.body()?.shows
+                    } else {
+                        _showsLiveData.value = emptyList()
                     }
                 }
 

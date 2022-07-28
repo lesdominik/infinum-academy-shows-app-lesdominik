@@ -65,12 +65,6 @@ class ShowDetailsFragment : Fragment() {
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
     private fun initReviewsRecycler() {
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
             adapter = ReviewsAdapter(reviews)
@@ -135,4 +129,8 @@ class ShowDetailsFragment : Fragment() {
         binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
