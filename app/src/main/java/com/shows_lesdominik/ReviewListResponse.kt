@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginAndRegisterResponse(
-    @SerialName("user") val user: User
+data class ReviewListResponse(
+    @SerialName("reviews") val reviews: List<Review>,
+    @SerialName("meta") val meta: Meta
 )

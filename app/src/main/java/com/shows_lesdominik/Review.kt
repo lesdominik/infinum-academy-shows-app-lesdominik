@@ -1,10 +1,14 @@
 package com.shows_lesdominik
 
-import androidx.annotation.DrawableRes
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Review(
-    val user: String,
-    val userImageUriString: String,
-    val rating: Int,
-    val comment: String?
+    @SerialName("id") val id: String,
+    @SerialName("comment") val comment: String,
+    @SerialName("rating") val rating: Int,
+    @SerialName("show_id") val showId: Int,
+    @SerialName("user") val user: User
 )
+

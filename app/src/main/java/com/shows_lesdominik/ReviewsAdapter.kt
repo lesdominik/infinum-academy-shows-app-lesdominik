@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.ItemReviewBinding
 
 class ReviewsAdapter(
@@ -23,13 +24,13 @@ class ReviewsAdapter(
 
     override fun getItemCount() = items.count()
 
-    fun getAverageRating(): String {
-        var sum: Int = 0
-        for (item in items) {
-            sum += item.rating
-        }
-        return "%.2f".format(sum.toDouble()/items.count().toDouble())
-    }
+//    fun getAverageRating(): String {
+//        var sum: Int = 0
+//        for (item in items) {
+//            sum += item.rating
+//        }
+//        return "%.2f".format(sum.toDouble()/items.count().toDouble())
+//    }
 
     fun addItem(review: Review) {
         items = items + review
@@ -39,8 +40,8 @@ class ReviewsAdapter(
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Review) {
-            binding.userName.text = item.user
-            binding.userImage.setImageURI(Uri.parse(item.userImageUriString))
+            binding.userName.text = item.user.email
+            Glide.with(binding.root).load(item.user.imageUrl).into(binding.userImage)
             binding.showRating.text = item.rating.toString()
 
             if (item.comment.isNullOrEmpty()) {

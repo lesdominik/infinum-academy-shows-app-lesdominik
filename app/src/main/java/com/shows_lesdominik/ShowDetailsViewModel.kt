@@ -42,4 +42,22 @@ class ShowDetailsViewModel : ViewModel() {
 
             })
     }
+
+    fun getShowReviews(showId: String) {
+        ApiModule.retrofit.getShowReviews(showId)
+            .enqueue(object: Callback<ReviewListResponse> {
+                override fun onResponse(call: Call<ReviewListResponse>, response: Response<ReviewListResponse>) {
+                    if (response.isSuccessful) {
+                        _reviewsLiveData.value = response.body()?.reviews
+                    } else {
+                        _reviewsLiveData.value = emptyList()
+                    }
+                }
+
+                override fun onFailure(call: Call<ReviewListResponse>, t: Throwable) {
+                    _reviewsLiveData.value = emptyList()
+                }
+
+            })
+    }
 }

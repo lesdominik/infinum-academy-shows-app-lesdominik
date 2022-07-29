@@ -25,10 +25,9 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var adapter: ReviewsAdapter
     private val args by navArgs<ShowDetailsFragmentArgs>()
+    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
-
-    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,6 @@ class ShowDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getShowDetails(args.showId)
-
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
             binding.showTitle.text = show.title
             Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
@@ -62,13 +60,25 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
+        viewModel.getShowReviews(args.showId)
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
-            adapter = ReviewsAdapter(reviews)
+            if (reviews.isEmpty()) {
+                binding.noReviewsText.isVisible = true
+                binding.reviewRecycle.isVisible = false
+                binding.reviewDetails.isVisible = false
+                binding.reviewRatingBar.isVisible = false
+            } else {
+                binding.noReviewsText.isVisible = false
+                binding.reviewRecycle.isVisible = true
+                binding.reviewDetails.isVisible = true
+                binding.reviewRatingBar.isVisible = true
 
-            binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
-            binding.reviewRecycle.adapter = adapter
+                adapter = ReviewsAdapter(reviews)
+                binding.reviewRecycle.adapter = adapter
+                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
 
-            binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            }
         }
     }
 
@@ -101,29 +111,29 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            addReviewToList(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString())
+//            addReviewToList(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString())
             dialog.dismiss()
         }
 
         dialog.show()
     }
 
-    private fun addReviewToList(rating: Int, comment: String?) {
-        var userImageUri = sharedPreferences.getString("URI", null)
-        if (userImageUri.isNullOrEmpty()) {
-            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
-        }
-        viewModel.usernameLiveData.observe(viewLifecycleOwner) { username ->
-            adapter.addItem(Review(username, userImageUri, rating, comment))
-        }
-        binding.noReviewsText.isVisible = false
-        binding.reviewRecycle.isVisible = true
-        binding.reviewDetails.isVisible = true
-        binding.reviewRatingBar.isVisible = true
-
-        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
-    }
+//    private fun addReviewToList(rating: Int, comment: String?) {
+//        var userImageUri = sharedPreferences.getString("URI", null)
+//        if (userImageUri.isNullOrEmpty()) {
+//            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
+//        }
+//        viewModel.usernameLiveData.observe(viewLifecycleOwner) { username ->
+//            adapter.addItem(Review(username, userImageUri, rating, comment))
+//        }
+//        binding.noReviewsText.isVisible = false
+//        binding.reviewRecycle.isVisible = true
+//        binding.reviewDetails.isVisible = true
+//        binding.reviewRatingBar.isVisible = true
+//
+//        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
+//        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
