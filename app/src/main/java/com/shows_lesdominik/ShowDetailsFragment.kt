@@ -60,6 +60,9 @@ class ShowDetailsFragment : Fragment() {
 
             binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
             binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+
+            binding.loadingShowDetails.isVisible = false
+            binding.showDetailsGroup.isVisible = true
         }
 
         initReviewsRecycler()
@@ -71,14 +74,10 @@ class ShowDetailsFragment : Fragment() {
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
             if (reviews.isEmpty()) {
                 binding.noReviewsText.isVisible = true
-                binding.reviewRecycle.isVisible = false
-                binding.reviewDetails.isVisible = false
-                binding.reviewRatingBar.isVisible = false
+                binding.reviewsGroup.isVisible = false
             } else {
                 binding.noReviewsText.isVisible = false
-                binding.reviewRecycle.isVisible = true
-                binding.reviewDetails.isVisible = true
-                binding.reviewRatingBar.isVisible = true
+                binding.reviewsGroup.isVisible = true
 
                 adapter = ReviewsAdapter(reviews)
                 binding.reviewRecycle.adapter = adapter

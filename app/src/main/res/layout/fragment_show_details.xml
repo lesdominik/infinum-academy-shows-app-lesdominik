@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/showDetailsToolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/backArrow"
@@ -32,15 +35,39 @@
 
     </Toolbar>
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loadingShowDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="@color/button_purple"
+        app:trackCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/showDetailsView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/showDetailsToolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/reviewButton">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/showDetailsGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="detailsImageCard, showDetails, showReviewsTitle, noReviewsText"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/detailsImageCard"
@@ -88,6 +115,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/showDetails"/>
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/reviewsGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="reviewDetails, reviewRatingBar, reviewRecycle"/>
+
             <TextView
                 android:id="@+id/reviewDetails"
                 android:layout_width="wrap_content"
@@ -99,7 +133,6 @@
                 android:textAllCaps="true"
                 android:textColor="@color/light_grey"
                 android:textSize="14sp"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/showReviewsTitle"/>
 
@@ -110,7 +143,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
                 android:progressTint="@color/button_purple"
                 android:secondaryProgressTint="@color/button_purple"
                 app:layout_constraintStart_toStartOf="parent"
@@ -121,7 +153,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_max="320dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -148,7 +179,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reviewButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginVertical="16dp"
@@ -158,6 +189,10 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="17sp"
-        app:cornerRadius="40dp"/>
+        app:cornerRadius="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/showDetailsView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -99,6 +99,7 @@ class ShowsFragment : Fragment() {
     private fun initShowsRecycler() {
         viewModel.getShows()
         viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
+            binding.loadingShows.isVisible = false
             if (shows.isEmpty()) {
                 binding.showsRecycler.isVisible = false
                 binding.noShowsView.isVisible = true
