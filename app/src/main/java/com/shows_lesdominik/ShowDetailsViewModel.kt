@@ -9,25 +9,15 @@ import retrofit2.Response
 
 class ShowDetailsViewModel : ViewModel() {
 
-    private val reviews = emptyList<Review>()
-
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
 
-    private val _usernameLiveData = MutableLiveData<String>()
-    val usernameLiveData: LiveData<String> = _usernameLiveData
+    private val _newReviewLiveData = MutableLiveData<Review>()
+    val newReviewLiveData: LiveData<Review> = _newReviewLiveData
 
     private val _showDetailsLiveData = MutableLiveData<Show>()
     val showDetailsLiveData: LiveData<Show> = _showDetailsLiveData
 
-    init {
-        _reviewsLiveData.value = reviews
-    }
-
-    fun getUsername(email: String) {
-        val splitEmail = email.split("@")
-        _usernameLiveData.value = splitEmail[0]
-    }
 
     fun getShowDetails(showId: String) {
         ApiModule.retrofit.getShowDetails(showId)
@@ -56,6 +46,29 @@ class ShowDetailsViewModel : ViewModel() {
 
                 override fun onFailure(call: Call<ReviewListResponse>, t: Throwable) {
                     _reviewsLiveData.value = emptyList()
+                }
+
+            })
+    }
+
+    fun addReview(rating: Int, comment: String?, showId: String) {
+        val reviewCreateRequest = ReviewCreateRequest(
+            rating = rating,
+            comment = comment,
+            showId = showId.toInt()
+        )
+
+        ApiModule.retrofit.createShowReview(reviewCreateRequest)
+            .enqueue(object: Callback<ReviewCreateResponse> {
+                override fun onResponse(call: Call<ReviewCreateResponse>, response: Response<ReviewCreateResponse>) {
+                    if (response.isSuccessful) {
+                        _newReviewLiveData.value = response.body()?.review
+                    }
+                    _newReviewLiveData.value = null
+                }
+
+                override fun onFailure(call: Call<ReviewCreateResponse>, t: Throwable) {
+                    _newReviewLiveData.value = null
                 }
 
             })

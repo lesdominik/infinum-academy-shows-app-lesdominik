@@ -33,8 +33,8 @@ class ReviewsAdapter(
 //    }
 
     fun addItem(review: Review) {
-        items = items + review
-        notifyItemInserted(items.lastIndex)
+        items = listOf<Review>(review) + items
+        notifyItemInserted(0)
     }
 
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -45,8 +45,8 @@ class ReviewsAdapter(
             } else {
                 Glide.with(binding.root).load(item.user.imageUrl).into(binding.userImage)
             }
-            
-            var splitEmail = item.user.email.split("@")
+
+            val splitEmail = item.user.email.split("@")
             binding.userName.text = splitEmail[0]
             binding.showRating.text = item.rating.toString()
 

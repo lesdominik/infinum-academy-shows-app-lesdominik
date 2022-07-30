@@ -29,6 +29,9 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    private var noOfReviews: Int = 0
+    private var showAvgRating: Float? = 0F
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,9 +54,13 @@ class ShowDetailsFragment : Fragment() {
             binding.showTitle.text = show.title
             Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
-        }
 
-        viewModel.getUsername(args.userEmail)
+            noOfReviews = show.noOfReviews
+            showAvgRating = show.averageRating
+
+            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+        }
 
         initReviewsRecycler()
         initListeners()
@@ -111,29 +118,19 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
-//            addReviewToList(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString())
+            viewModel.addReview(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString().trim(), args.showId)
+            viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
+                if (review != null) {
+                    adapter.addItem(review)
+
+                    binding.reviewDetails.text = "${noOfReviews+1} reviews, $showAvgRating average"
+                }
+            }
             dialog.dismiss()
         }
 
         dialog.show()
     }
-
-//    private fun addReviewToList(rating: Int, comment: String?) {
-//        var userImageUri = sharedPreferences.getString("URI", null)
-//        if (userImageUri.isNullOrEmpty()) {
-//            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
-//        }
-//        viewModel.usernameLiveData.observe(viewLifecycleOwner) { username ->
-//            adapter.addItem(Review(username, userImageUri, rating, comment))
-//        }
-//        binding.noReviewsText.isVisible = false
-//        binding.reviewRecycle.isVisible = true
-//        binding.reviewDetails.isVisible = true
-//        binding.reviewRatingBar.isVisible = true
-//
-//        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-//        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

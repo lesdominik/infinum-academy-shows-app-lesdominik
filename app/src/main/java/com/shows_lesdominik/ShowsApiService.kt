@@ -22,4 +22,7 @@ interface ShowsApiService {
 
     @GET("/shows/{show_id}/reviews")
     fun getShowReviews(@Path("show_id") showId: String): Call<ReviewListResponse>
+
+    @POST("/reviews")
+    fun createShowReview(@Body request: ReviewCreateRequest): Call<ReviewCreateResponse>
 }
