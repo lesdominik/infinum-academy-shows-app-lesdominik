@@ -40,8 +40,14 @@ class ReviewsAdapter(
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Review) {
-            binding.userName.text = item.user.email
-            Glide.with(binding.root).load(item.user.imageUrl).into(binding.userImage)
+            if (item.user.imageUrl.isNullOrEmpty()) {
+                binding.userImage.setImageResource(R.drawable.default_user)
+            } else {
+                Glide.with(binding.root).load(item.user.imageUrl).into(binding.userImage)
+            }
+            
+            var splitEmail = item.user.email.split("@")
+            binding.userName.text = splitEmail[0]
             binding.showRating.text = item.rating.toString()
 
             if (item.comment.isNullOrEmpty()) {
