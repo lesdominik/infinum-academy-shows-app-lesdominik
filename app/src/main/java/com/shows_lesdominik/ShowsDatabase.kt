@@ -6,7 +6,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-
+        ShowEntity::class,
+        ReviewEntity::class
     ],
     version = 1
 )
