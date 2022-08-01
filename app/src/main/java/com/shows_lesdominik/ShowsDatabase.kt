@@ -27,4 +27,6 @@ abstract class ShowsDatabase : RoomDatabase() {
     }
 
     abstract fun showDao(): ShowDao
+
+    abstract fun reviewDao(): ReviewDao
 }
