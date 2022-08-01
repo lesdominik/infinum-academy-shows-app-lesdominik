@@ -21,9 +21,8 @@ import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import java.io.File
-
-private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsFragment : Fragment() {
 
@@ -38,13 +37,15 @@ class ShowsFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var rememberMe = false
+    private var imageUrl: String? = null
+    private lateinit var uri: Uri
     private var latestTmpUri: Uri? = null
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
             latestTmpUri?.let { uri ->
                 binding.userIcon.setImageURI(uri)
                 bottomSheetBinding.userDetailsImage.setImageURI(uri)
+                viewModel.setProfileImage(requireContext())
             }
         }
     }
@@ -67,22 +68,16 @@ class ShowsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         userEmail = args.userEmail
-        rememberMe = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
-        if (!rememberMe) {
-            sharedPreferences.edit {
-                remove("URI")
-            }
-        }
-        var getUriString = sharedPreferences.getString("URI", null)
-        getUriString?.let {
-            latestTmpUri = Uri.parse(getUriString)
-        }
+        binding.userIcon.setImageResource(R.drawable.default_user)
 
-        if (latestTmpUri == null) {
-            binding.userIcon.setImageResource(R.drawable.default_user)
-        }
-        else {
-            binding.userIcon.setImageURI(latestTmpUri)
+        viewModel.getUserInfo()
+        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                imageUrl = user.imageUrl
+                if (!imageUrl.isNullOrEmpty()) {
+                    Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+                }
+            }
         }
 
         initShowsRecycler()
@@ -124,11 +119,10 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.userEmail.text = userEmail
 
-        if (latestTmpUri == null) {
-            bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
-        }
-        else {
-            bottomSheetBinding.userDetailsImage.setImageURI(latestTmpUri)
+        when {
+            latestTmpUri != null -> bottomSheetBinding.userDetailsImage.setImageURI(uri)
+            imageUrl != null -> Glide.with(bottomSheetBinding.root).load(imageUrl).into(bottomSheetBinding.userDetailsImage)
+            else -> bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
         }
 
 
@@ -149,10 +143,6 @@ class ShowsFragment : Fragment() {
 
         alertDialog.setMessage("Do you really want to log out?")
             .setPositiveButton("Yes") { dialog, _ ->
-                sharedPreferences.edit {
-                    putBoolean(REMEMBER_ME_CHECKED, false)
-                    remove("URI")
-                }
                 findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()
             }
@@ -167,9 +157,6 @@ class ShowsFragment : Fragment() {
     private fun takeImage() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
-                sharedPreferences.edit {
-                    putString("URI", uri.toString())
-                }
                 latestTmpUri = uri
                 takeImageResult.launch(uri)
             }
@@ -177,12 +164,12 @@ class ShowsFragment : Fragment() {
     }
 
     private fun getTmpFileUri(): Uri {
-        val tmpFile = File.createTempFile("tmp_image_file", ".png").apply {
-            createNewFile()
-            deleteOnExit()
-        }
+        val file = FileUtil.createImageFile(requireContext())
 
-        return FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
+        file?.let {
+            uri = FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", it)
+        }
+        return uri
     }
 
 

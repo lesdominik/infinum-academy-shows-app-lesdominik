@@ -1,9 +1,12 @@
 package com.shows_lesdominik
 
+import okhttp3.MultipartBody
+import okhttp3.Request
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ShowsApiService {
@@ -25,4 +28,10 @@ interface ShowsApiService {
 
     @POST("/reviews")
     fun createShowReview(@Body request: ReviewCreateRequest): Call<ReviewCreateResponse>
+
+    @PUT("/users")
+    fun storeUserImage(@Body requestBody: MultipartBody): Call<StoreImageResponse>
+
+    @GET("/users/me")
+    fun getUserInfo(): Call<UserInfoResponse>
 }
