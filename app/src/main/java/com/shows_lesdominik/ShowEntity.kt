@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "show")
+@Entity(tableName = "shows")
 data class ShowEntity(
     @ColumnInfo(name = "id") @PrimaryKey val id: String,
     @ColumnInfo(name = "average_rating") val averageRating: Float?,
