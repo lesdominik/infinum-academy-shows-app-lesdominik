@@ -51,24 +51,44 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getShowDetails(args.showId)
-        viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showTitle.text = show.title
-            Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
-            binding.showDetails.text = show.description
-
-            noOfReviews = show.noOfReviews
-            showAvgRating = show.averageRating
-
-            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
-            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
-
-            binding.loadingShowDetails.isVisible = false
-            binding.showDetailsGroup.isVisible = true
-        }
-
+        initShowDetails()
         initReviewsRecycler()
         initListeners()
+    }
+
+    private fun initShowDetails() {
+        if (InternetConnectionUtil.isConnected(requireContext())) {
+            viewModel.getShowDetails(args.showId)
+            viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
+                binding.showTitle.text = show.title
+                Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
+                binding.showDetails.text = show.description
+
+                noOfReviews = show.noOfReviews
+                showAvgRating = show.averageRating
+
+                binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+                binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+
+                binding.loadingShowDetails.isVisible = false
+                binding.showDetailsGroup.isVisible = true
+            }
+        } else {
+            viewModel.getShowDetailsFromDatabase(args.showId).observe(viewLifecycleOwner) { showEntity ->
+                binding.showTitle.text = showEntity.title
+                Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
+                binding.showDetails.text = showEntity.description
+
+                noOfReviews = showEntity.noOfReviews
+                showAvgRating = showEntity.averageRating
+
+                binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+                binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+
+                binding.loadingShowDetails.isVisible = false
+                binding.showDetailsGroup.isVisible = true
+            }
+        }
     }
 
     private fun initReviewsRecycler() {

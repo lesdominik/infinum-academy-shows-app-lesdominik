@@ -33,6 +33,10 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
             })
     }
 
+    fun getShowDetailsFromDatabase(showId: String): LiveData<ShowEntity> {
+        return database.showDao().getShow(showId)
+    }
+
     fun getShowReviews(showId: String) {
         ApiModule.retrofit.getShowReviews(showId)
             .enqueue(object: Callback<ReviewListResponse> {

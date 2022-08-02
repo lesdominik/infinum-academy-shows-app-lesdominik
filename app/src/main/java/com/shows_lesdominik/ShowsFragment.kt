@@ -74,9 +74,13 @@ class ShowsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         userEmail = args.userEmail
-        binding.userIcon.setImageResource(R.drawable.default_user)
+        if (imageUrl != null) {
+            Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+        } else {
+            binding.userIcon.setImageResource(R.drawable.default_user)
+        }
 
-        if (isConnected(requireContext())) {
+        if (InternetConnectionUtil.isConnected(requireContext())) {
             viewModel.getUserInfo()
             viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
                 if (user != null) {
@@ -92,27 +96,6 @@ class ShowsFragment : Fragment() {
         initListeners()
     }
 
-    private fun isConnected(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            val network = connectivityManager.activeNetwork ?: return false
-            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-
-            return when {
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                else -> false
-            }
-        } else {
-            // if the android version is below M
-            @Suppress("DEPRECATION") val networkInfo =
-                connectivityManager.activeNetworkInfo ?: return false
-            @Suppress("DEPRECATION")
-            return networkInfo.isConnected
-        }
-    }
-
 
     private fun initListeners() {
         binding.userIcon.setOnClickListener {
@@ -121,7 +104,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecycler() {
-        if (isConnected(requireContext())) {
+        if (InternetConnectionUtil.isConnected(requireContext())) {
             viewModel.getShows()
             viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
                 binding.loadingShows.isVisible = false
@@ -168,6 +151,7 @@ class ShowsFragment : Fragment() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.userEmail.text = userEmail
+        bottomSheetBinding.changeProfilePhoto.isEnabled = InternetConnectionUtil.isConnected(requireContext())
 
         when {
             latestTmpUri != null -> bottomSheetBinding.userDetailsImage.setImageURI(uri)
