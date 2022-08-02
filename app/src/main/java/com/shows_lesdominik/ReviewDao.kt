@@ -14,6 +14,6 @@ interface ReviewDao {
     @Query("SELECT * FROM reviews")
     fun getAllReviews(): LiveData<List<ReviewEntity>>
 
-    @Query("SELECT * FROM reviews WHERE id is :reviewId")
-    fun getReview(reviewId: String)
+//    @Query("SELECT * FROM reviews WHERE id is :reviewId")
+//    fun getReview(reviewId: String): LiveData<ReviewEntity>
 }

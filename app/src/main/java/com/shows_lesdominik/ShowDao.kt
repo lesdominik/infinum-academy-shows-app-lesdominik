@@ -3,12 +3,13 @@ package com.shows_lesdominik
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
 interface ShowDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertShows(shows: List<ShowEntity>)
 
     @Query("SELECT * FROM shows")

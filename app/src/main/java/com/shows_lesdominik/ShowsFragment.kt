@@ -3,6 +3,8 @@ package com.shows_lesdominik
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogUserDetailsBinding
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
+import android.os.Build
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -72,20 +76,41 @@ class ShowsFragment : Fragment() {
         userEmail = args.userEmail
         binding.userIcon.setImageResource(R.drawable.default_user)
 
-//        provjeri internet konekciju
-
-        viewModel.getUserInfo()
-        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                imageUrl = user.imageUrl
-                if (!imageUrl.isNullOrEmpty()) {
-                    Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+        if (isConnected(requireContext())) {
+            viewModel.getUserInfo()
+            viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+                if (user != null) {
+                    imageUrl = user.imageUrl
+                    if (!imageUrl.isNullOrEmpty()) {
+                        Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+                    }
                 }
             }
         }
 
         initShowsRecycler()
         initListeners()
+    }
+
+    private fun isConnected(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            val network = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+            return when {
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                else -> false
+            }
+        } else {
+            // if the android version is below M
+            @Suppress("DEPRECATION") val networkInfo =
+                connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
+        }
     }
 
 
@@ -96,21 +121,42 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecycler() {
-        viewModel.getShows()
-        viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
-            binding.loadingShows.isVisible = false
-            if (shows.isEmpty()) {
-                binding.showsRecycler.isVisible = false
-                binding.noShowsView.isVisible = true
-            } else {
-                binding.showsRecycler.isVisible = true
-                binding.noShowsView.isVisible = false
+        if (isConnected(requireContext())) {
+            viewModel.getShows()
+            viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
+                binding.loadingShows.isVisible = false
+                if (shows.isEmpty()) {
+                    binding.showsRecycler.isVisible = false
+                    binding.noShowsView.isVisible = true
+                } else {
+                    binding.showsRecycler.isVisible = true
+                    binding.noShowsView.isVisible = false
 
-                binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
-                    val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
-                    findNavController().navigate(directions)
+                    binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
+                        val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
+                        findNavController().navigate(directions)
+                    }
+                    binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
                 }
-                binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+            }
+        } else {
+            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
+                binding.loadingShows.isVisible = false
+                if (shows.isEmpty()) {
+                    binding.showsRecycler.isVisible = false
+                    binding.noShowsView.isVisible = true
+                } else {
+                    binding.showsRecycler.isVisible = true
+                    binding.noShowsView.isVisible = false
+
+                    binding.showsRecycler.adapter = ShowsAdapter(shows.map { show ->
+                        Show(show.id, show.averageRating, show.description, show.imageUrl, show.noOfReviews, show.title)
+                    }) { show ->
+                        val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
+                        findNavController().navigate(directions)
+                    }
+                    binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+                }
             }
         }
     }
@@ -147,6 +193,9 @@ class ShowsFragment : Fragment() {
 
         alertDialog.setMessage("Do you really want to log out?")
             .setPositiveButton("Yes") { dialog, _ ->
+                sharedPreferences.edit {
+                    putBoolean("REMEMBER_ME_CHECKED", false)
+                }
                 findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()
             }

@@ -56,6 +56,10 @@ class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
         }
     }
 
+    fun getShowsFromDatabase(): LiveData<List<ShowEntity>> {
+        return database.showDao().getAllShows()
+    }
+
     fun getUserInfo() {
         ApiModule.retrofit.getUserInfo()
             .enqueue(object: Callback<UserInfoResponse> {
