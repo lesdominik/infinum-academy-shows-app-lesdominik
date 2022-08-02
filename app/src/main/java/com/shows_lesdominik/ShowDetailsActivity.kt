@@ -81,7 +81,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         adapter.addItem(Review(username, R.drawable.ic_person, rating, comment))
         noReviewsText.isVisible = false
         reviewVisibilityGroup.isVisible = true
-        
+
         reviewDetails.text = getString(R.string.reviewDetails, adapter.itemCount, adapter.getAverageRating())
         reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
