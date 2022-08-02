@@ -13,4 +13,5 @@
     <string name="dialog_title">Write a review</string>
     <string name="review_comment">Comment</string>
     <string name="submit_button">Submit</string>
+    <string name="reviewDetails">%1$s reviews, %2$s average</string>
 </resources>
