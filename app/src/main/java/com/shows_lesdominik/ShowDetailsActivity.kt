@@ -77,14 +77,12 @@ class ShowDetailsActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun addReviewToList(rating: Int, comment: String?) {
+    private fun addReviewToList(rating: Int, comment: String?) = with(binding) {
         adapter.addItem(Review(username, R.drawable.ic_person, rating, comment))
-        binding.noReviewsText.isVisible = false
-        binding.reviewRecycle.isVisible = true
-        binding.reviewDetails.isVisible = true
-        binding.reviewRatingBar.isVisible = true
+        noReviewsText.isVisible = false
+        reviewVisibilityGroup.isVisible = true
 
-        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
+        reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
+        reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 }
