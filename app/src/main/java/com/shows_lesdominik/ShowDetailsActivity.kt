@@ -65,10 +65,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         }
 
         bottomSheetBinding.showRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            bottomSheetBinding.submitButton.isEnabled = when {
-                rating > 0 -> true
-                else -> false
-            }
+            bottomSheetBinding.submitButton.isEnabled = rating > 0
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
