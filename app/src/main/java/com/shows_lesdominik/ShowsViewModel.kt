@@ -19,7 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShowsViewModel : ViewModel() {
+class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
 
     private val _showsLiveData = MutableLiveData<List<Show>>()
     val showsLiveData: LiveData<List<Show>> = _showsLiveData
@@ -34,6 +34,7 @@ class ShowsViewModel : ViewModel() {
             .enqueue(object: Callback<ShowsResponse> {
                 override fun onResponse(call: Call<ShowsResponse>, response: Response<ShowsResponse>) {
                     if (response.isSuccessful) {
+                        response.body()?.let { initDatabase(it.shows) }
                         _showsLiveData.value = response.body()?.shows
                     } else {
                         _showsLiveData.value = emptyList()
@@ -45,6 +46,14 @@ class ShowsViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    private fun initDatabase(shows: List<Show>) {
+        Executors.newSingleThreadExecutor().execute {
+            database.showDao().insertShows(shows.map { show ->
+                ShowEntity(show.id, show.averageRating, show.description, show.imageUrl, show.noOfReviews, show.title)
+            })
+        }
     }
 
     fun getUserInfo() {

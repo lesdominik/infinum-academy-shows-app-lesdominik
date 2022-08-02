@@ -33,7 +33,9 @@ class ShowsFragment : Fragment() {
 
     private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
-    private val viewModel by viewModels<ShowsViewModel>()
+    private val viewModel: ShowsViewModel by viewModels {
+        ShowsViewModelFactory((activity?.application as ShowsApplication).database)
+    }
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -69,6 +71,8 @@ class ShowsFragment : Fragment() {
 
         userEmail = args.userEmail
         binding.userIcon.setImageResource(R.drawable.default_user)
+
+//        provjeri internet konekciju
 
         viewModel.getUserInfo()
         viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
