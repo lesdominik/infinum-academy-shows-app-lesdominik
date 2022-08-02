@@ -52,8 +52,10 @@ class LoginFragment : Fragment() {
             binding.registerTextButton.isVisible = false
         }
 
-        sharedPreferences.edit {
-            remove("ACCESS_TOKEN")
+        if (!sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)) {
+            sharedPreferences.edit {
+                remove("ACCESS_TOKEN")
+            }
         }
 
         val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
