@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -65,6 +66,9 @@ class ShowDetailsFragment : Fragment() {
                 Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
                 binding.showDetails.text = show.description
 
+                sharedPreferences.edit {
+                    putInt("NO_OF_REVIEWS", show.noOfReviews)
+                }
                 noOfReviews = show.noOfReviews
                 showAvgRating = show.averageRating
 
@@ -80,7 +84,7 @@ class ShowDetailsFragment : Fragment() {
                 Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
                 binding.showDetails.text = showEntity.description
 
-                noOfReviews = showEntity.noOfReviews
+                noOfReviews = sharedPreferences.getInt("NO_OF_REVIEWS", showEntity.noOfReviews)
                 showAvgRating = showEntity.averageRating
 
                 binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
@@ -175,7 +179,12 @@ class ShowDetailsFragment : Fragment() {
                 if (review != null) {
                     adapter.addItem(review)
 
-                    binding.reviewDetails.text = "${noOfReviews+1} reviews, $showAvgRating average"
+                    val reviewCount = sharedPreferences.getInt("NO_OF_REVIEWS", noOfReviews)
+                    sharedPreferences.edit {
+                        putInt("NO_OF_REVIEWS", reviewCount + 1)
+                    }
+
+                    binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"
                 }
             }
             dialog.dismiss()
