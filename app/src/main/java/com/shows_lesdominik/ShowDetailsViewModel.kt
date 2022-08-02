@@ -3,6 +3,7 @@ package com.shows_lesdominik
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.concurrent.Executors
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,6 +43,7 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
             .enqueue(object: Callback<ReviewListResponse> {
                 override fun onResponse(call: Call<ReviewListResponse>, response: Response<ReviewListResponse>) {
                     if (response.isSuccessful) {
+                        response.body()?.let { addReviewsToDatabase(it.reviews) }
                         _reviewsLiveData.value = response.body()?.reviews
                     } else {
                         _reviewsLiveData.value = emptyList()
@@ -53,6 +55,26 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
                 }
 
             })
+    }
+
+    fun addReviewsToDatabase(reviews: List<Review>) {
+        Executors.newSingleThreadExecutor().execute {
+            database.reviewDao().createReviews(reviews.map { review ->
+                ReviewEntity(
+                    review.id,
+                    review.comment,
+                    review.rating,
+                    review.showId,
+                    review.user.id,
+                    review.user.email,
+                    review.user.imageUrl
+                )
+            })
+        }
+    }
+
+    fun getReviewsFromDatabase(showId: String): LiveData<List<ReviewEntity>> {
+        return database.reviewDao().getAllReviews(showId)
     }
 
     fun addReview(rating: Int, comment: String?, showId: String) {

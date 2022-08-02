@@ -92,20 +92,46 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
-        viewModel.getShowReviews(args.showId)
-        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
-            if (reviews.isEmpty()) {
-                binding.noReviewsText.isVisible = true
-                binding.reviewsGroup.isVisible = false
-            } else {
-                binding.noReviewsText.isVisible = false
-                binding.reviewsGroup.isVisible = true
+        if (InternetConnectionUtil.isConnected(requireContext())) {
+            viewModel.getShowReviews(args.showId)
+            viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
+                if (reviews.isEmpty()) {
+                    binding.noReviewsText.isVisible = true
+                    binding.reviewsGroup.isVisible = false
+                } else {
+                    binding.noReviewsText.isVisible = false
+                    binding.reviewsGroup.isVisible = true
 
-                adapter = ReviewsAdapter(reviews)
-                binding.reviewRecycle.adapter = adapter
-                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+                    adapter = ReviewsAdapter(reviews)
+                    binding.reviewRecycle.adapter = adapter
+                    binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
 
-                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                    binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                }
+            }
+        } else {
+            viewModel.getReviewsFromDatabase(args.showId).observe(viewLifecycleOwner) { reviewsEntity ->
+                if (reviewsEntity.isEmpty()) {
+                    binding.noReviewsText.isVisible = true
+                    binding.reviewsGroup.isVisible = false
+                } else {
+                    binding.noReviewsText.isVisible = false
+                    binding.reviewsGroup.isVisible = true
+
+                    adapter = ReviewsAdapter(reviewsEntity.map { reviewEntity ->
+                        Review(
+                            reviewEntity.id,
+                            reviewEntity.comment,
+                            reviewEntity.rating,
+                            reviewEntity.showId,
+                            User(reviewEntity.userId, reviewEntity.userEmail, reviewEntity.userImageUrl)
+                        )
+                    })
+                    binding.reviewRecycle.adapter = adapter
+                    binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+
+                    binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                }
             }
         }
     }
