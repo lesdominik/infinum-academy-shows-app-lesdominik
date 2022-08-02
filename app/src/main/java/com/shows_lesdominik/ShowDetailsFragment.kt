@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -138,7 +139,11 @@ class ShowDetailsFragment : Fragment() {
 
     private fun initListeners() {
         binding.reviewButton.setOnClickListener {
-            showAddReviewBottomSheet()
+            if (InternetConnectionUtil.isConnected(requireContext())) {
+                showAddReviewBottomSheet()
+            } else {
+                Toast.makeText(requireContext(), "No Internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.backArrow.setOnClickListener {

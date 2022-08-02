@@ -22,6 +22,7 @@ import com.shows_lesdominik.databinding.DialogUserDetailsBinding
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
@@ -151,7 +152,6 @@ class ShowsFragment : Fragment() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.userEmail.text = userEmail
-        bottomSheetBinding.changeProfilePhoto.isEnabled = InternetConnectionUtil.isConnected(requireContext())
 
         when {
             latestTmpUri != null -> bottomSheetBinding.userDetailsImage.setImageURI(uri)
@@ -161,7 +161,11 @@ class ShowsFragment : Fragment() {
 
 
         bottomSheetBinding.changeProfilePhoto.setOnClickListener {
-           takeImage()
+            if (InternetConnectionUtil.isConnected(requireContext())) {
+                takeImage()
+            } else {
+                Toast.makeText(requireContext(), "No Internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         bottomSheetBinding.logoutButton.setOnClickListener {
