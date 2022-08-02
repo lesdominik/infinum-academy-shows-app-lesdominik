@@ -9,8 +9,7 @@ import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.ItemReviewBinding
 
 class ReviewsAdapter(
-    private var items: List<Review>,
-
+    private var items: List<Review>
     ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {

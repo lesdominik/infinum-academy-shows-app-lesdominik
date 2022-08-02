@@ -88,6 +88,8 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
             .enqueue(object: Callback<ReviewCreateResponse> {
                 override fun onResponse(call: Call<ReviewCreateResponse>, response: Response<ReviewCreateResponse>) {
                     if (response.isSuccessful) {
+                        val review = response.body()?.review
+                        addReviewsToDatabase(listOf(review) as List<Review>)
                         _newReviewLiveData.value = response.body()?.review
                     }
                     _newReviewLiveData.value = null
