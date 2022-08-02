@@ -14,4 +14,5 @@
     <string name="review_comment">Comment</string>
     <string name="submit_button">Submit</string>
     <string name="reviewDetails">%1$s reviews, %2$s average</string>
+    <string name="show_details_title">The Office</string>
 </resources>

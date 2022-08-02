@@ -27,14 +27,14 @@ class ShowDetailsActivity : AppCompatActivity() {
         binding = ActivityShowDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.showTitle.text = intent.extras?.getString("NAME")
+        binding.showDetailsToolbar.title = intent.extras?.getString("NAME")
         intent.extras?.getInt("PICTURE")?.let { binding.detailsImage.setImageResource(it) }
         binding.showDetails.text = intent.extras?.getString("DETAILS")
         username = intent.extras?.getString("USERNAME").toString()
 
         initReviewsRecycler()
 
-        binding.backArrow.setOnClickListener {
+        binding.showDetailsToolbar.setNavigationOnClickListener {
             val intent = Intent(this, ShowsActivity::class.java)
             startActivity(intent)
         }
