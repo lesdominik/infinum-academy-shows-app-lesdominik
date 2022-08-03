@@ -67,7 +67,7 @@ class ShowsFragment : Fragment() {
             findNavController().navigate(directions)
         }
 
-        binding.showsRecycler.layoutManager = LinearLayoutManager(context)
+        binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
 
         binding.showsRecycler.adapter = adapter
     }

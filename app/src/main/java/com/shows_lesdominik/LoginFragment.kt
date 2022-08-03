@@ -75,8 +75,9 @@ class LoginFragment : Fragment() {
 
 
         binding.loginButton.setOnClickListener {
-            val username = binding.emailEdiText.text?.substring(0, binding.emailEdiText.text!!.indexOf("@"))
-            val directions = LoginFragmentDirections.toShowsFragment(username.toString())
+            val splitUsername = binding.emailEdiText.text.toString().split("@")
+            val username = splitUsername[0]
+            val directions = LoginFragmentDirections.toShowsFragment(username)
             findNavController().navigate(directions)
         }
 
