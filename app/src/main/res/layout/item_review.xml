@@ -13,12 +13,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userImage"
-            android:layout_width="48dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            app:civ_border="false"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:clickable="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/default_user"/>
 
         <TextView

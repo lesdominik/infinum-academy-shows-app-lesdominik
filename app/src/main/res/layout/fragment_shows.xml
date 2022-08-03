@@ -21,16 +21,17 @@
             android:text="@string/shows_title"
             android:textSize="36sp"/>
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userIcon"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:clickable="true"
-            app:civ_border="false"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/default_user"/>
 
         <com.google.android.material.button.MaterialButtonToggleGroup

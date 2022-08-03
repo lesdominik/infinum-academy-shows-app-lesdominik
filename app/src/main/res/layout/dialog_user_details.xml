@@ -7,15 +7,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userDetailsImage"
         android:layout_width="80dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        app:civ_border_color="@color/button_purple"
-        app:civ_border_width="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        app:strokeColor="@color/button_purple"
+        app:strokeWidth="2dp"
         tools:src="@drawable/default_user"/>
 
     <TextView
