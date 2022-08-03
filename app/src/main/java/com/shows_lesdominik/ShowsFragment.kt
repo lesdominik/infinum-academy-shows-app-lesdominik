@@ -45,30 +45,20 @@ class ShowsFragment : Fragment() {
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
     private fun initListeners() {
         binding.logoutButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
-            when {
-                isChecked -> {
-                    binding.showsRecycler.isVisible = false
-                    binding.noShowsView.isVisible = true
-                }
-                else -> {
-                    binding.showsRecycler.isVisible = true
-                    binding.noShowsView.isVisible = false
-                }
+            if (isChecked) {
+                binding.showsRecycler.isVisible = false
+                binding.noShowsView.isVisible = true
+            } else {
+                binding.showsRecycler.isVisible = true
+                binding.noShowsView.isVisible = false
             }
         }
-
     }
 
     private fun initShowsRecycler() {
@@ -80,5 +70,11 @@ class ShowsFragment : Fragment() {
         binding.showsRecycler.layoutManager = LinearLayoutManager(context)
 
         binding.showsRecycler.adapter = adapter
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

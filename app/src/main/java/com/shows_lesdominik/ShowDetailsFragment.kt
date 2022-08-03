@@ -39,7 +39,7 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.showTitle.text = args.showName
+        binding.showDetailsToolbar.title = args.showName
         binding.detailsImage.setImageResource(args.pictureId)
         binding.showDetails.text = args.details
 
@@ -49,19 +49,13 @@ class ShowDetailsFragment : Fragment() {
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
     private fun initReviewsRecycler() {
         adapter = ReviewsAdapter(reviews)
 
-        binding.reviewRecycle.layoutManager = LinearLayoutManager(context)
+        binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
         binding.reviewRecycle.adapter = adapter
 
-        binding.reviewRecycle.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
     }
 
     private fun initListeners() {
@@ -69,13 +63,13 @@ class ShowDetailsFragment : Fragment() {
             showAddReviewBottomSheet()
         }
 
-        binding.backArrow.setOnClickListener {
+        binding.showDetailsToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
 
     private fun showAddReviewBottomSheet() {
-        val dialog = BottomSheetDialog(context!!)
+        val dialog = BottomSheetDialog(requireContext())
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
@@ -86,10 +80,7 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.showRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            bottomSheetBinding.submitButton.isEnabled = when {
-                rating > 0 -> true
-                else -> false
-            }
+            bottomSheetBinding.submitButton.isEnabled = rating > 0
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
@@ -100,15 +91,18 @@ class ShowDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addReviewToList(rating: Int, comment: String?) {
+    private fun addReviewToList(rating: Int, comment: String?) = with(binding) {
         adapter.addItem(Review(username, R.drawable.ic_person, rating, comment))
-        binding.noReviewsText.isVisible = false
-        binding.reviewRecycle.isVisible = true
-        binding.reviewDetails.isVisible = true
-        binding.reviewRatingBar.isVisible = true
+        noReviewsText.isVisible = false
+        reviewVisibilityGroup.isVisible = true
 
-        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
+        reviewDetails.text = getString(R.string.reviewDetails, adapter.itemCount, adapter.getAverageRating())
+        reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

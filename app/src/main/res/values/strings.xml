@@ -15,4 +15,6 @@
     <string name="submit_button">Submit</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_shows_text">Your shows are not showing. Get it?</string>
+    <string name="reviewDetails">%1$s reviews, %2$s average</string>
 </resources>

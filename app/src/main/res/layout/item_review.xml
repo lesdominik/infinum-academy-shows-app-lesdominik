@@ -1,66 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="24dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/userImage"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/button_purple"
+        tools:src="@drawable/ic_person"/>
 
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            tools:src="@drawable/ic_person"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:tint="@color/button_purple" />
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/button_purple"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/commentText"
+        app:layout_constraintEnd_toStartOf="@id/showRating"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/userImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        tools:text="user.name"/>
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="user.name"
-            android:textColor="@color/button_purple"
-            android:fontFamily="@font/roboto_medium"
-            android:textSize="15sp"
-            android:layout_marginStart="16dp" />
+    <TextView
+        android:id="@+id/showRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="15sp"
+        android:textColor="@color/button_purple"
+        app:layout_constraintBottom_toTopOf="@id/commentText"
+        app:layout_constraintEnd_toStartOf="@id/starImage"
+        app:layout_constraintStart_toEndOf="@id/userName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        tools:text="3"/>
 
-        <View
-            android:layout_height="0dp"
-            android:layout_width="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/showRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
-            android:textSize="15sp"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/button_purple"
-            tools:text="3"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_star_full"/>
-
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/starImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star_full"
+        app:layout_constraintBottom_toTopOf="@id/commentText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"/>
 
     <TextView
         android:id="@+id/commentText"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
         android:fontFamily="@font/roboto_regular"
         android:textSize="15sp"
-        android:lineHeight="20sp"/>
+        android:lineHeight="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userImage"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

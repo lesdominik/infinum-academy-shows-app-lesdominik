@@ -9,12 +9,11 @@ import model.Review
 import java.text.DecimalFormat
 
 class ReviewsAdapter(
-    private var items: List<Review>,
-
-    ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
+    private var items: List<Review>
+) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ReviewViewHolder(binding)
     }
 
@@ -25,11 +24,8 @@ class ReviewsAdapter(
     override fun getItemCount() = items.count()
 
     fun getAverageRating(): String {
-        var sum: Int = 0
-        for (item in items) {
-            sum += item.rating
-        }
-        return "%.2f".format(sum.toDouble()/items.count().toDouble())
+        val average = items.sumOf { it.rating }.toDouble().div(items.count())
+        return "%.2f".format(average)
     }
 
     fun addItem(review: Review) {

@@ -29,12 +29,6 @@ class LoginFragment : Fragment() {
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
     private fun initListeners() {
 
         var emailCorrect = false
@@ -86,5 +80,11 @@ class LoginFragment : Fragment() {
             findNavController().navigate(directions)
         }
 
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
