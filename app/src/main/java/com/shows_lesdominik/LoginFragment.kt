@@ -10,22 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.shows_lesdominik.databinding.FragmentLoginBinding
-
-private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
-private const val USER_EMAIL = "USER_EMAIL"
 
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() =_binding!!
 
+    private val viewModel by viewModels<LoginViewModel>()
+
     private lateinit var sharedPreferences: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -40,35 +40,28 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
-        if (rememberMeChecked) {
-            val userEmail = sharedPreferences.getString(USER_EMAIL, "")
-            val directions = LoginFragmentDirections.toShowsFragment(userEmail.toString())
+        viewModel.getUserEmail(sharedPreferences)
+        viewModel.userEmail.observe(viewLifecycleOwner) { userEmail ->
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
             findNavController().navigate(directions)
         }
 
         initListeners()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
     private fun initListeners() {
 
         var emailCorrect = false
         var passwordCorrect = false
 
-        binding.emailEdiText.doAfterTextChanged {
+        binding.emailEdiText.doAfterTextChanged { email ->
 
             when {
-                it.toString().isEmpty() -> {
+                email.toString().isEmpty() -> {
                     binding.emailTextField.error = null
                     emailCorrect = false
                 }
-                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
+                Patterns.EMAIL_ADDRESS.matcher(email.toString()).matches() -> {
                     binding.emailTextField.error = null
                     emailCorrect = true
                 }
@@ -81,14 +74,14 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.passwordEditText.doAfterTextChanged {
+        binding.passwordEditText.doAfterTextChanged { password ->
 
             when {
-                it.toString().isEmpty() -> {
+                password.toString().isEmpty() -> {
                     binding.passwordTextField.error = null
                     passwordCorrect = false
                 }
-                it.toString().length < 6 -> {
+                password.toString().length < 6 -> {
                     binding.passwordTextField.error = "Minimum password length is 6 characters"
                     passwordCorrect = false
                 }
@@ -102,21 +95,23 @@ class LoginFragment : Fragment() {
 
 
         binding.rememberMeCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit {
-                putBoolean(REMEMBER_ME_CHECKED, isChecked)
-            }
+            viewModel.setRememberMeChecked(sharedPreferences, isChecked)
         }
 
 
         binding.loginButton.setOnClickListener {
             val userEmail = binding.emailEdiText.text.toString()
-            sharedPreferences.edit {
-                putString(USER_EMAIL, userEmail)
-            }
+            viewModel.storeUserEmail(sharedPreferences, userEmail)
 
             val directions = LoginFragmentDirections.toShowsFragment(userEmail)
             findNavController().navigate(directions)
         }
 
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

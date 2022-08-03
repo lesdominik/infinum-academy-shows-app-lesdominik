@@ -35,7 +35,6 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -58,17 +57,9 @@ class ShowDetailsFragment : Fragment() {
             binding.showDetails.text = show.description
         }
 
-        viewModel.getUsername(args.userEmail)
-
         initReviewsRecycler()
         initListeners()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 
     private fun initReviewsRecycler() {
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
@@ -118,13 +109,13 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReviewToList(rating: Int, comment: String?) {
-        var userImageUri = sharedPreferences.getString("URI", null)
-        if (userImageUri.isNullOrEmpty()) {
-            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
+        var newReview: Review? = null
+        viewModel.createReview(sharedPreferences, args.userEmail, rating, comment)
+        viewModel.createdReviewLiveData.observe(viewLifecycleOwner) { review ->
+            newReview = review
         }
-        viewModel.usernameLiveData.observe(viewLifecycleOwner) { username ->
-            adapter.addItem(Review(username, userImageUri, rating, comment))
-        }
+        newReview?.let { adapter.addItem(it) }
+
         binding.noReviewsText.isVisible = false
         binding.reviewRecycle.isVisible = true
         binding.reviewDetails.isVisible = true
@@ -134,4 +125,9 @@ class ShowDetailsFragment : Fragment() {
         binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

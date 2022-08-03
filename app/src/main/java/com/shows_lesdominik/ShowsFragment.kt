@@ -25,8 +25,6 @@ import java.io.File
 import model.Show
 import ui.ShowsAdapter
 
-private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
-
 class ShowsFragment : Fragment() {
 
     private var _binding: FragmentShowsBinding? = null
@@ -35,14 +33,12 @@ class ShowsFragment : Fragment() {
     private lateinit var bottomSheetBinding: DialogUserDetailsBinding
 
     private lateinit var adapter: ShowsAdapter
-    private lateinit var userEmail: String
     private val args by navArgs<ShowsFragmentArgs>()
 
     private val viewModel by viewModels<ShowsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var rememberMe = false
     private var latestTmpUri: Uri? = null
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
@@ -55,7 +51,6 @@ class ShowsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -70,34 +65,19 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userEmail = args.userEmail
-        rememberMe = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
-        if (!rememberMe) {
-            sharedPreferences.edit {
-                remove("URI")
+        viewModel.getLatestTempUri(sharedPreferences)
+        viewModel.latestTmpUri.observe(viewLifecycleOwner) { latestUri ->
+            if (latestUri == null) {
+                binding.userIcon.setImageResource(R.drawable.default_user)
             }
-        }
-        var getUriString = sharedPreferences.getString("URI", null)
-        getUriString?.let {
-            latestTmpUri = Uri.parse(getUriString)
-        }
-
-        if (latestTmpUri == null) {
-            binding.userIcon.setImageResource(R.drawable.default_user)
-        }
-        else {
-            binding.userIcon.setImageURI(latestTmpUri)
+            else {
+                binding.userIcon.setImageURI(latestUri)
+            }
         }
 
         initShowsRecycler()
         initListeners()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 
     private fun initListeners() {
 
@@ -123,7 +103,7 @@ class ShowsFragment : Fragment() {
     private fun initShowsRecycler() {
         viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
             adapter = ShowsAdapter(shows) { show ->
-                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, userEmail)
+                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, args.userEmail)
                 findNavController().navigate(directions)
             }
             binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
@@ -139,7 +119,7 @@ class ShowsFragment : Fragment() {
         bottomSheetBinding = DialogUserDetailsBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
 
-        bottomSheetBinding.userEmail.text = userEmail
+        bottomSheetBinding.userEmail.text = args.userEmail
 
         if (latestTmpUri == null) {
             bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
@@ -151,12 +131,10 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.changeProfilePhoto.setOnClickListener {
            takeImage()
-
         }
 
         bottomSheetBinding.logoutButton.setOnClickListener {
             showAlertDialog()
-
             dialog.dismiss()
         }
 
@@ -168,10 +146,8 @@ class ShowsFragment : Fragment() {
 
         alertDialog.setMessage("Do you really want to log out?")
             .setPositiveButton("Yes") { dialog, _ ->
-                sharedPreferences.edit {
-                    putBoolean(REMEMBER_ME_CHECKED, false)
-                    remove("URI")
-                }
+                viewModel.setRememberMeToFalse(sharedPreferences)
+
                 findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()
             }
@@ -186,9 +162,8 @@ class ShowsFragment : Fragment() {
     private fun takeImage() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
-                sharedPreferences.edit {
-                    putString("URI", uri.toString())
-                }
+                viewModel.storeImageUri(sharedPreferences, uri)
+
                 latestTmpUri = uri
                 takeImageResult.launch(uri)
             }
@@ -202,5 +177,11 @@ class ShowsFragment : Fragment() {
         }
 
         return FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

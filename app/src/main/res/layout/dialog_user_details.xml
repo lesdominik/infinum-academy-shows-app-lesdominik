@@ -10,11 +10,10 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userDetailsImage"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:strokeColor="@color/button_purple"
         app:strokeWidth="2dp"

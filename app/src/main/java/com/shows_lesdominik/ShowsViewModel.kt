@@ -1,5 +1,8 @@
 package com.shows_lesdominik
 
+import android.content.SharedPreferences
+import android.net.Uri
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +19,38 @@ class ShowsViewModel : ViewModel() {
     private val _showsLiveData = MutableLiveData<List<Show>>()
     val showsLiveData: LiveData<List<Show>> = _showsLiveData
 
+    private val _latestTmpUri = MutableLiveData<Uri?>()
+    val latestTmpUri: LiveData<Uri?> = _latestTmpUri
+
     init {
         _showsLiveData.value = shows
+    }
+
+    fun getLatestTempUri(sharedPreferences: SharedPreferences) {
+        val rememberMe = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
+        if (!rememberMe) {
+            sharedPreferences.edit {
+                remove("URI")
+            }
+        }
+        var getUriString = sharedPreferences.getString("URI", null)
+        if (getUriString == null) {
+            _latestTmpUri.value = null
+        } else {
+            _latestTmpUri.value = Uri.parse(getUriString)
+        }
+    }
+
+    fun setRememberMeToFalse(sharedPreferences: SharedPreferences) {
+        sharedPreferences.edit {
+            putBoolean("REMEMBER_ME_CHECKED", false)
+            remove("URI")
+        }
+    }
+
+    fun storeImageUri(sharedPreferences: SharedPreferences, uri: Uri) {
+        sharedPreferences.edit {
+            putString("URI", uri.toString())
+        }
     }
 }

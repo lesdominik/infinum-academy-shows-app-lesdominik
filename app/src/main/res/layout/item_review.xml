@@ -16,9 +16,8 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userImage"
             android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
             android:clickable="true"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/default_user"/>

@@ -10,9 +10,8 @@ import model.Review
 import java.text.DecimalFormat
 
 class ReviewsAdapter(
-    private var items: List<Review>,
-
-    ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
+    private var items: List<Review>
+) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
         val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context))
