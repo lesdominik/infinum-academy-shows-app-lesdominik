@@ -15,7 +15,19 @@ class LoginViewModel : ViewModel() {
     private val _loginResultLiveData = MutableLiveData<Boolean>()
     val loginResultLiveData: LiveData<Boolean> = _loginResultLiveData
 
+    private val _alreadyAnimatedLiveData = MutableLiveData<Boolean>()
+    val alreadyAnimatedLiveData: LiveData<Boolean> = _alreadyAnimatedLiveData
+
     private lateinit var sharedPreferences: SharedPreferences
+
+    private var alreadyAnimated = false
+
+    fun animateOnlyAfterSplash() {
+        _alreadyAnimatedLiveData.value = alreadyAnimated
+        if (!alreadyAnimated) {
+            alreadyAnimated = true
+        }
+    }
 
     fun onLoginButtonClicked(email: String, password: String, context: Context) {
         sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -47,6 +49,14 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.animateOnlyAfterSplash()
+        viewModel.alreadyAnimatedLiveData.observe(viewLifecycleOwner) { alreadyAnimated ->
+            if (!alreadyAnimated) {
+                animateLogoIcon()
+                animateLogoText()
+            }
+        }
+
         if (args.afterRegistration) {
             binding.title.text = "Registration successful!"
             binding.registerTextButton.isVisible = false
@@ -73,6 +83,26 @@ class LoginFragment : Fragment() {
 
         initListeners()
         initLoginButton()
+    }
+
+    private fun animateLogoIcon() = with(binding.logoImage) {
+        translationY = -400f
+        animate()
+            .translationY(0f)
+            .setDuration(1500)
+            .setInterpolator(BounceInterpolator())
+            .start()
+    }
+
+    private fun animateLogoText() = with(binding.logoText) {
+        scaleX = 0f
+        scaleY = 0f
+        animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(1500)
+            .setInterpolator(OvershootInterpolator())
+            .start()
     }
 
     private fun loginOutcome(loginSuccessful: Boolean) = with(binding) {
