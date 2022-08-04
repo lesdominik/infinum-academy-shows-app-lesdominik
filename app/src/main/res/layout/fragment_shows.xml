@@ -6,36 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Toolbar
+    <com.shows_lesdominik.CustomToolbar
         android:id="@+id/showsToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/showsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/shows_title"
-            android:textSize="36sp"/>
-
-        <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/userIcon"
-            android:layout_width="32dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
-            android:clickable="true"
-            app:civ_border="false"
-            tools:src="@drawable/default_user"/>
-    </Toolbar>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loadingShows"

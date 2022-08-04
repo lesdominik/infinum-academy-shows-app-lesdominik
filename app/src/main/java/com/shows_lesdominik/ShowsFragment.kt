@@ -50,7 +50,7 @@ class ShowsFragment : Fragment() {
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
             latestTmpUri?.let { uri ->
-                binding.userIcon.setImageURI(uri)
+                binding.showsToolbar.setUserIconFromUri(uri)
                 bottomSheetBinding.userDetailsImage.setImageURI(uri)
                 viewModel.setProfileImage(requireContext())
             }
@@ -76,9 +76,9 @@ class ShowsFragment : Fragment() {
 
         userEmail = args.userEmail
         if (imageUrl != null) {
-            Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+            binding.showsToolbar.setUserIconFromUrl(imageUrl)
         } else {
-            binding.userIcon.setImageResource(R.drawable.default_user)
+            binding.showsToolbar.setDefaultUserIcon()
         }
 
         if (InternetConnectionUtil.isConnected(requireContext())) {
@@ -87,7 +87,7 @@ class ShowsFragment : Fragment() {
                 if (user != null) {
                     imageUrl = user.imageUrl
                     if (!imageUrl.isNullOrEmpty()) {
-                        Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+                        binding.showsToolbar.setUserIconFromUrl(imageUrl)
                     }
                 }
             }
@@ -99,7 +99,7 @@ class ShowsFragment : Fragment() {
 
 
     private fun initListeners() {
-        binding.userIcon.setOnClickListener {
+        binding.showsToolbar.setOnClickListener {
             showUserDetailsBottomSheet()
         }
     }
