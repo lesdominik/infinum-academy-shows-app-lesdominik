@@ -3,8 +3,6 @@ package com.shows_lesdominik
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,13 +19,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogUserDetailsBinding
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import java.io.File
 
 class ShowsFragment : Fragment() {
 
@@ -99,7 +94,7 @@ class ShowsFragment : Fragment() {
 
 
     private fun initListeners() {
-        binding.showsToolbar.setOnClickListener {
+        binding.showsToolbar.onUserIconClick {
             showUserDetailsBottomSheet()
         }
     }

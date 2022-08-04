@@ -19,8 +19,6 @@ class CustomToolbar @JvmOverloads constructor(
     init {
         binding = CustomToolbarBinding.inflate(LayoutInflater.from(context), this)
 
-        binding.userIcon.setOnClickListener {
-        }
     }
 
     fun setUserIconFromUri(uri: Uri) {
@@ -33,5 +31,11 @@ class CustomToolbar @JvmOverloads constructor(
 
     fun setUserIconFromUrl(url: String?) {
         Glide.with(binding.root).load(url).into(binding.userIcon)
+    }
+
+    fun onUserIconClick(onUserImageClickCallback: () -> Unit) {
+        binding.userIcon.setOnClickListener {
+            onUserImageClickCallback()
+        }
     }
 }
