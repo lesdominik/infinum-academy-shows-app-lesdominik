@@ -32,17 +32,15 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ApiModule.initRetrofit(requireContext())
-
         viewModel.registrationResultLiveData.observe(viewLifecycleOwner) { registrationSuccessful ->
-            registrationOutcome(registrationSuccessful)
+            afterRegistrationValidation(registrationSuccessful)
         }
 
         initListeners()
         initRegisterButton()
     }
 
-    private fun registrationOutcome(registrationSuccessful: Boolean) = with(binding) {
+    private fun afterRegistrationValidation(registrationSuccessful: Boolean) = with(binding) {
         if (registrationSuccessful) {
             val destination = RegisterFragmentDirections.toLoginFragment(true)
             findNavController().navigate(destination)

@@ -66,20 +66,16 @@ class LoginFragment : Fragment() {
         ApiModule.initRetrofit(requireContext())
 
         viewModel.loginResultLiveData.observe(viewLifecycleOwner) { loginSuccessful ->
-            loginOutcome(loginSuccessful)
+            afterLoginValidation(loginSuccessful)
         }
 
         initListeners()
         initLoginButton()
     }
 
-    private fun loginOutcome(loginSuccessful: Boolean) = with(binding) {
+    private fun afterLoginValidation(loginSuccessful: Boolean) = with(binding) {
         if (loginSuccessful) {
             val userEmail = emailEdiText.text.toString()
-            sharedPreferences.edit {
-                putString(USER_EMAIL, userEmail)
-            }
-
             val directions = LoginFragmentDirections.toShowsFragment(userEmail)
             findNavController().navigate(directions)
         } else {

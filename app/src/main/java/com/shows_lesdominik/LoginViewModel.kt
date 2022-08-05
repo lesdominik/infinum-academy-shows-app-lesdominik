@@ -32,6 +32,7 @@ class LoginViewModel : ViewModel() {
                     sharedPreferences.edit {
                         putString("ACCESS_TOKEN", response.headers()["access-token"])
                         putString("CLIENT", response.headers()["client"])
+                        putString("USER_EMAIL", response.body()?.user?.email)
                     }
                 }
 
