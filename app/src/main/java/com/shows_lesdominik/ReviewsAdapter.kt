@@ -24,14 +24,6 @@ class ReviewsAdapter(
 
     override fun getItemCount() = items.count()
 
-//    fun getAverageRating(): String {
-//        var sum: Int = 0
-//        for (item in items) {
-//            sum += item.rating
-//        }
-//        return "%.2f".format(sum.toDouble()/items.count().toDouble())
-//    }
-
     fun addItem(review: Review) {
         items = listOf<Review>(review) + items
         notifyItemInserted(0)
