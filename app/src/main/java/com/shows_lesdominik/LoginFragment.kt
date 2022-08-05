@@ -17,9 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.shows_lesdominik.databinding.FragmentLoginBinding
 
-private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
-private const val USER_EMAIL = "USER_EMAIL"
-
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
@@ -47,23 +44,18 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getUserEmail(sharedPreferences)
+        viewModel.userEmailLiveData.observe(viewLifecycleOwner) { userEmail ->
+            if (userEmail.isNotEmpty()) {
+                val directions = LoginFragmentDirections.toShowsFragment(userEmail)
+                findNavController().navigate(directions)
+            }
+        }
+
         if (args.afterRegistration) {
-            binding.title.text = "Registration successful!"
+            binding.title.text = getString(R.string.registration_successful)
             binding.registerTextButton.isVisible = false
         }
-
-        sharedPreferences.edit {
-            remove("ACCESS_TOKEN")
-        }
-
-        val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
-        if (rememberMeChecked) {
-            val userEmail = sharedPreferences.getString(USER_EMAIL, "")
-            val directions = LoginFragmentDirections.toShowsFragment(userEmail.toString())
-            findNavController().navigate(directions)
-        }
-
-        ApiModule.initRetrofit(requireContext())
 
         viewModel.loginResultLiveData.observe(viewLifecycleOwner) { loginSuccessful ->
             afterLoginValidation(loginSuccessful)
@@ -82,7 +74,7 @@ class LoginFragment : Fragment() {
             loginButton.isEnabled = false
             emailEdiText.setText("")
             passwordEditText.setText("")
-            message.text = "Login failed. Please register or try again"
+            message.text = getString(R.string.login_failed)
             message.setTextColor(Color.RED)
         }
     }
@@ -115,9 +107,7 @@ class LoginFragment : Fragment() {
 
 
         binding.rememberMeCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit {
-                putBoolean(REMEMBER_ME_CHECKED, isChecked)
-            }
+            viewModel.setRememberMeChecked(sharedPreferences, isChecked)
         }
 
 

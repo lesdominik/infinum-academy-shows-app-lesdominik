@@ -15,7 +15,25 @@ class LoginViewModel : ViewModel() {
     private val _loginResultLiveData = MutableLiveData<Boolean>()
     val loginResultLiveData: LiveData<Boolean> = _loginResultLiveData
 
+    private val _userEmailLiveData = MutableLiveData<String>()
+    val userEmailLiveData: LiveData<String> = _userEmailLiveData
+
     private lateinit var sharedPreferences: SharedPreferences
+
+    fun getUserEmail(sharedPreferences: SharedPreferences) {
+        val rememberMeChecked = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
+        if (rememberMeChecked) {
+            _userEmailLiveData.value = sharedPreferences.getString("USER_EMAIL", "")
+        } else {
+            _userEmailLiveData.value = ""
+        }
+    }
+
+    fun setRememberMeChecked(sharedPreferences: SharedPreferences, isChecked: Boolean) {
+        sharedPreferences.edit {
+            putBoolean("REMEMBER_ME_CHECKED", isChecked)
+        }
+    }
 
     fun onLoginButtonClicked(email: String, password: String, context: Context) {
         sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)

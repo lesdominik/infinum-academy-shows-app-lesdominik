@@ -23,4 +23,6 @@
     <string name="repeat_password">Repeat password</string>
     <string name="register_text_button">Register</string>
     <string name="registration_failed">Registration failed. Please try again</string>
+    <string name="registration_successful">Registration successful!</string>
+    <string name="login_failed">Login failed. Please register or try again</string>
 </resources>
