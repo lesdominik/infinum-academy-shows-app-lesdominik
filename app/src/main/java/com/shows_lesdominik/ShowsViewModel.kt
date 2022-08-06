@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +28,11 @@ class ShowsViewModel : ViewModel() {
     private val _userLiveData = MutableLiveData<User>()
     val userLiveData: LiveData<User> = _userLiveData
 
-    private lateinit var sharedPreferences: SharedPreferences
+    fun setRememberMeChecked(sharedPreferences: SharedPreferences) {
+        sharedPreferences.edit {
+            putBoolean("REMEMBER_ME_CHECKED", false)
+        }
+    }
 
     fun getShows() {
         ApiModule.retrofit.getShows()
@@ -64,10 +69,7 @@ class ShowsViewModel : ViewModel() {
             })
     }
 
-    fun setProfileImage(context: Context) {
-        sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-
-        val file = FileUtil.getImageFile(context)!!
+    fun setProfileImage(sharedPreferences: SharedPreferences, file: File) {
         val email = sharedPreferences.getString("USER_EMAIL", "")
 
         val requestBody = MultipartBody.Builder()
