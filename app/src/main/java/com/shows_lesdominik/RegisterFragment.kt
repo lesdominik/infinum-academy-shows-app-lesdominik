@@ -33,6 +33,8 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.registrationResultLiveData.observe(viewLifecycleOwner) { registrationSuccessful ->
+            binding.registerGroup.isVisible = true
+            binding.loadingRegister.isVisible = false
             afterRegistrationValidation(registrationSuccessful)
         }
 
@@ -55,6 +57,8 @@ class RegisterFragment : Fragment() {
 
     private fun initRegisterButton() = with(binding) {
         registerButton.setOnClickListener {
+            binding.registerGroup.isVisible = false
+            binding.loadingRegister.isVisible = true
             viewModel.onRegisterButtonClicked(
                 email = emailEdiText.text.toString(),
                 password = passwordEditText.text.toString(),

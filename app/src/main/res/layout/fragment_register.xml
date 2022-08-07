@@ -29,6 +29,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6"
+            app:trackCornerRadius="8dp"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/registerGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="logoImage, logoText, title, emailTextField, passwordTextField, repeatPasswordTextField, registerButton"/>
+
         <ImageView
             android:id="@+id/logoImage"
             android:layout_width="wrap_content"
