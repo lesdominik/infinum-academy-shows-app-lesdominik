@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="detailsImageCard, showDetails, showReviewsTitle, noReviewsText"/>
+                app:constraint_referenced_ids="detailsImageCard, showDetails, showReviewsTitle"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/detailsImageCard"
