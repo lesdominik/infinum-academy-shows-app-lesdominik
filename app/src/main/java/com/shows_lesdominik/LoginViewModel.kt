@@ -2,6 +2,7 @@ package com.shows_lesdominik
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Patterns
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +19,12 @@ class LoginViewModel : ViewModel() {
     private val _userEmailLiveData = MutableLiveData<String>()
     val userEmailLiveData: LiveData<String> = _userEmailLiveData
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val _isLoginButtonEnabledLiveData = MutableLiveData<Boolean>()
+    val isLoginButtonEnabledLiveData: LiveData<Boolean> = _isLoginButtonEnabledLiveData
+
+    private var emailNotEmpty = false
+    private var passwordNotEmpty = false
+
 
     fun getUserEmail(sharedPreferences: SharedPreferences) {
         val rememberMeChecked = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
@@ -35,9 +41,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun onLoginButtonClicked(email: String, password: String, context: Context) {
-        sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-
+    fun onLoginButtonClicked(sharedPreferences: SharedPreferences, email: String, password: String, context: Context) {
         val loginRequest = LoginRequest(
             email = email,
             password = password
@@ -59,5 +63,15 @@ class LoginViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun emailValidation(email: String) {
+        emailNotEmpty = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        _isLoginButtonEnabledLiveData.value = emailNotEmpty && passwordNotEmpty
+    }
+
+    fun passwordValidation(password: String) {
+        passwordNotEmpty = password.isNotEmpty()
+        _isLoginButtonEnabledLiveData.value = emailNotEmpty && passwordNotEmpty
     }
 }

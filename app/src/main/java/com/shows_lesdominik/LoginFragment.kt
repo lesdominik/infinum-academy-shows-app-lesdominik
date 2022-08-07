@@ -22,10 +22,10 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() =_binding!!
 
-    private lateinit var sharedPreferences: SharedPreferences
-
     private val args by navArgs<LoginFragmentArgs>()
     private val viewModel by viewModels<LoginViewModel>()
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +82,7 @@ class LoginFragment : Fragment() {
     private fun initLoginButton() = with(binding) {
         loginButton.setOnClickListener {
             viewModel.onLoginButtonClicked(
+                sharedPreferences,
                 email = emailEdiText.text.toString(),
                 password = passwordEditText.text.toString(),
                 context = requireContext()
@@ -90,19 +91,19 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
-
-        var emailNotEmpty = false
-        var passwordNotEmpty = false
-
-        binding.emailEdiText.doAfterTextChanged {
-            emailNotEmpty = Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches()
-            binding.loginButton.isEnabled = emailNotEmpty && passwordNotEmpty
+        binding.emailEdiText.doAfterTextChanged { email ->
+            viewModel.emailValidation(email.toString())
+            viewModel.isLoginButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.loginButton.isEnabled = isEnabled
+            }
         }
 
 
-        binding.passwordEditText.doAfterTextChanged {
-            passwordNotEmpty = it.toString().isNotEmpty()
-            binding.loginButton.isEnabled = emailNotEmpty && passwordNotEmpty
+        binding.passwordEditText.doAfterTextChanged { password ->
+            viewModel.passwordValidation(password.toString())
+            viewModel.isLoginButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.loginButton.isEnabled = isEnabled
+            }
         }
 
 
