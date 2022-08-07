@@ -29,8 +29,6 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var noOfReviews: Int = 0
-    private var showAvgRating: Float? = 0F
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +53,10 @@ class ShowDetailsFragment : Fragment() {
             Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
 
-            noOfReviews = show.noOfReviews
-            showAvgRating = show.averageRating
-
-            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
-            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+            if (show.averageRating != null) {
+                binding.reviewDetails.text = getString(R.string.reviewDetails, show.noOfReviews, show.averageRating)
+                binding.reviewRatingBar.rating = show.averageRating
+            }
 
             binding.loadingShowDetails.isVisible = false
             binding.showDetailsGroup.isVisible = true
@@ -110,10 +107,7 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.showRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            bottomSheetBinding.submitButton.isEnabled = when {
-                rating > 0 -> true
-                else -> false
-            }
+            bottomSheetBinding.submitButton.isEnabled = rating > 0
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
@@ -122,7 +116,7 @@ class ShowDetailsFragment : Fragment() {
                 if (review != null) {
                     adapter.addItem(review)
 
-                    binding.reviewDetails.text = "${noOfReviews+1} reviews, $showAvgRating average"
+                    binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
                 }
             }
             dialog.dismiss()
