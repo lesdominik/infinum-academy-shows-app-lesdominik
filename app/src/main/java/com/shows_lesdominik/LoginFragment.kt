@@ -59,6 +59,8 @@ class LoginFragment : Fragment() {
 
         viewModel.loginResultLiveData.observe(viewLifecycleOwner) { loginSuccessful ->
             afterLoginValidation(loginSuccessful)
+            binding.loginGroup.isVisible = true
+            binding.loadingLogin.isVisible = false
         }
 
         initListeners()
@@ -81,6 +83,8 @@ class LoginFragment : Fragment() {
 
     private fun initLoginButton() = with(binding) {
         loginButton.setOnClickListener {
+            binding.loginGroup.isVisible = false
+            binding.loadingLogin.isVisible = true
             viewModel.onLoginButtonClicked(
                 sharedPreferences,
                 email = emailEdiText.text.toString(),
