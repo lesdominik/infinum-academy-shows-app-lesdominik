@@ -64,68 +64,54 @@ class RegisterFragment : Fragment() {
     }
 
     private fun initListeners() {
-        var emailCorrect = false
-        var passwordCorrect = false
-        var passwordRepeatCorrect = false
+        binding.emailEdiText.doAfterTextChanged { email ->
+            viewModel.emailValidation(email.toString())
 
-        binding.emailEdiText.doAfterTextChanged {
-
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.emailErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.emailTextField.error = null
-                    emailCorrect = false
-                }
-                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = true
-                }
-                else -> {
-                    binding.emailTextField.error = "Invalid email address"
-                    emailCorrect = false
+                } else {
+                    binding.emailTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
+
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
 
 
-        binding.passwordEditText.doAfterTextChanged {
+        binding.passwordEditText.doAfterTextChanged { password ->
+            viewModel.passwordValidation(password.toString())
 
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.passwordErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.passwordTextField.error = null
-                    passwordCorrect = false
-                }
-                it.toString().length < 6 -> {
-                    binding.passwordTextField.error = "Minimum password length is 6 characters"
-                    passwordCorrect = false
-                }
-                else -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = true
+                } else {
+                    binding.passwordTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
+
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
 
 
-        binding.repeatPasswordEditText.doAfterTextChanged {
+        binding.repeatPasswordEditText.doAfterTextChanged { repeatPassword ->
+            viewModel.repeatPasswordValidation(repeatPassword.toString())
 
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.repeatPasswordErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.repeatPasswordTextField.error = null
-                    passwordRepeatCorrect = false
-                }
-                it.toString() != binding.passwordEditText.text.toString() -> {
-                    binding.repeatPasswordTextField.error = "Passwords don't match"
-                    passwordRepeatCorrect = false
-                }
-                else -> {
-                    binding.repeatPasswordTextField.error = null
-                    passwordRepeatCorrect = true
+                } else {
+                    binding.repeatPasswordTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
 
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
     }
 

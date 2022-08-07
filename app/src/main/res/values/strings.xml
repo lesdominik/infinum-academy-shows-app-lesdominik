@@ -26,4 +26,7 @@
     <string name="registration_successful">Registration successful!</string>
     <string name="login_failed">Login failed. Please register or try again</string>
     <string name="logout_alert_dialog_message">Do you really want to log out?</string>
+    <string name="passwords_not_matching">Passwords don\'t match</string>
+    <string name="password_length_message">Minimum password length is 6 characters</string>
+    <string name="invalid_email_address">Invalid email address</string>
 </resources>
