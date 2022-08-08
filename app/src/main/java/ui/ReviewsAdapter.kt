@@ -1,0 +1,51 @@
+package ui
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
+import com.shows_lesdominik.databinding.ItemReviewBinding
+import model.Review
+import java.text.DecimalFormat
+
+class ReviewsAdapter(
+    private var items: List<Review>
+) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
+        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ReviewViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
+        holder.bind(items[position])
+    }
+
+    override fun getItemCount() = items.count()
+
+    fun getAverageRating(): String {
+        val average = items.sumOf { it.rating }.toDouble().div(items.count())
+        return "%.2f".format(average)
+    }
+
+    fun addItem(review: Review) {
+        items = items + review
+        notifyItemInserted(items.lastIndex)
+    }
+
+    inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: Review) {
+            binding.userName.text = item.user
+            binding.userImage.setImageResource(item.profileImageResourceId)
+            binding.showRating.text = item.rating.toString()
+
+            if (item.comment.isNullOrEmpty()) {
+                binding.commentText.isVisible = false
+            } else {
+                binding.commentText.isVisible = true
+                binding.commentText.text = item.comment
+            }
+        }
+    }
+}

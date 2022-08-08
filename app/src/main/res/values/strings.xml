@@ -6,4 +6,14 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login_button">Login</string>
+    <string name="shows_title">Shows</string>
+    <string name="review_button">Write a review</string>
+    <string name="show_reviews">Reviews</string>
+    <string name="show_no_reviews">No reviews yet.</string>
+    <string name="dialog_title">Write a review</string>
+    <string name="review_comment">Comment</string>
+    <string name="submit_button">Submit</string>
+    <string name="reviewDetails">%1$s reviews, %2$s average</string>
+    <string name="show_details_title">The Office</string>
+    <string name="no_shows_text">Your shows are not showing. Get it?</string>
 </resources>
