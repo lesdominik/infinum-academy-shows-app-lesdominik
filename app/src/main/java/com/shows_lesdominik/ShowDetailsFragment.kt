@@ -70,6 +70,10 @@ class ShowDetailsFragment : Fragment() {
 
             binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         }
+
+        viewModel.createdReviewLiveData.observe(viewLifecycleOwner) { review ->
+            adapter.addItem(review)
+        }
     }
 
     private fun initListeners() {
@@ -109,12 +113,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun addReviewToList(rating: Int, comment: String?) {
-        var newReview: Review? = null
         viewModel.createReview(sharedPreferences, args.userEmail, rating, comment)
-        viewModel.createdReviewLiveData.observe(viewLifecycleOwner) { review ->
-            newReview = review
-        }
-        newReview?.let { adapter.addItem(it) }
 
         binding.noReviewsText.isVisible = false
         binding.reviewRecycle.isVisible = true
