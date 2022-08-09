@@ -8,6 +8,8 @@ import androidx.lifecycle.liveData
 import model.Review
 import model.Show
 
+private const val URI = "URI"
+
 class ShowDetailsViewModel : ViewModel() {
 
     private val reviews = emptyList<Review>()
@@ -31,7 +33,7 @@ class ShowDetailsViewModel : ViewModel() {
     }
 
     fun createReview(sharedPreferences: SharedPreferences, userEmail: String, rating: Int, comment: String?){
-        var userImageUri = sharedPreferences.getString("URI", null)
+        var userImageUri = sharedPreferences.getString(URI, null)
         if (userImageUri.isNullOrEmpty()) {
             userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
         }

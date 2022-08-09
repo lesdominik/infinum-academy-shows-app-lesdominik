@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import model.Show
 
+private const val URI = "URI"
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
+
 class ShowsViewModel : ViewModel() {
 
     private val shows = listOf(
@@ -27,13 +30,13 @@ class ShowsViewModel : ViewModel() {
     }
 
     fun getLatestTempUri(sharedPreferences: SharedPreferences) {
-        val rememberMe = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
+        val rememberMe = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
         if (!rememberMe) {
             sharedPreferences.edit {
-                remove("URI")
+                remove(URI)
             }
         }
-        var getUriString = sharedPreferences.getString("URI", null)
+        var getUriString = sharedPreferences.getString(URI, null)
         if (getUriString == null) {
             _latestTmpUri.value = null
         } else {
@@ -43,14 +46,14 @@ class ShowsViewModel : ViewModel() {
 
     fun setRememberMeToFalse(sharedPreferences: SharedPreferences) {
         sharedPreferences.edit {
-            putBoolean("REMEMBER_ME_CHECKED", false)
-            remove("URI")
+            putBoolean(REMEMBER_ME_CHECKED, false)
+            remove(URI)
         }
     }
 
     fun storeImageUri(sharedPreferences: SharedPreferences, uri: Uri) {
         sharedPreferences.edit {
-            putString("URI", uri.toString())
+            putString(URI, uri.toString())
         }
     }
 }
