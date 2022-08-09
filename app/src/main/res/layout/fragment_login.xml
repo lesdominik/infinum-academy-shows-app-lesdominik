@@ -75,7 +75,6 @@
             app:layout_constraintStart_toEndOf="@id/logoImage"
             app:layout_constraintTop_toTopOf="parent"/>
 
-
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
@@ -191,8 +190,9 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerTextButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:text="@string/register_text_button"
             android:textAllCaps="false"
             android:fontFamily="@font/roboto_bold"
