@@ -5,6 +5,6 @@ import android.app.Application
 class ShowsApplication : Application() {
 
     val database by lazy {
-        ShowsDatabase.getDatabase(this)!!
+        ShowsDatabase.getDatabase(this)
     }
 }

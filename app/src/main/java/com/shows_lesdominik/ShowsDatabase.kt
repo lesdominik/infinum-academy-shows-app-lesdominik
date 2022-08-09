@@ -19,7 +19,7 @@ abstract class ShowsDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ShowsDatabase? = null
 
-        fun getDatabase(context: Context): ShowsDatabase? {
+        fun getDatabase(context: Context): ShowsDatabase {
             return INSTANCE ?: synchronized(this) {
                 val database = Room.databaseBuilder(
                     context,
