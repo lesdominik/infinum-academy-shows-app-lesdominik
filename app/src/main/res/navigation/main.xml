@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.shows_lesdominik.LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/toShowsFragment"
+            app:destination="@id/showsFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/showsFragment"
+        android:name="com.shows_lesdominik.ShowsFragment"
+        tools:layout="@layout/fragment_shows">
+
+        <argument
+            android:name="username"
+            app:argType="string"/>
+
+        <action
+            android:id="@+id/toFragmentShowDetails"
+            app:destination="@id/fragmentShowDetails"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentShowDetails"
+        android:name="com.shows_lesdominik.ShowDetailsFragment"
+        tools:layout="@layout/fragment_show_details">
+
+        <argument
+            android:name="showName"
+            app:argType="string"/>
+
+        <argument
+            android:name="pictureId"
+            app:argType="integer"/>
+
+        <argument
+            android:name="details"
+            app:argType="string"/>
+
+        <argument
+            android:name="username"
+            app:argType="string"/>
+    </fragment>
+
+</navigation>
