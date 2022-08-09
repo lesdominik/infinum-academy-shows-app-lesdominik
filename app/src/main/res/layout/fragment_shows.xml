@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Toolbar
         android:id="@+id/showsToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,20 +22,27 @@
             android:layout_marginTop="32dp"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/shows_title"
-            android:textSize="36sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:textSize="36sp"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/userIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
+            android:clickable="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            tools:src="@drawable/default_user"/>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/logoutButton"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintEnd_toStartOf="@id/logoutButton">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/noShowsButton"
@@ -45,29 +52,13 @@
                 android:text="no shows"
                 android:textSize="12sp"/>
         </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <ImageView
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_logout"
-            android:clickable="true"
-            android:paddingVertical="8dp"
-            android:paddingStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/showsRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,12 +76,12 @@
         android:id="@+id/noShowsIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
         android:src="@drawable/ic_empty_space_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"/>
 
     <TextView
         android:id="@+id/noShowsText"

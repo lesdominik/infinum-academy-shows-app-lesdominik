@@ -1,5 +1,6 @@
 package ui
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -37,7 +38,7 @@ class ReviewsAdapter(
 
         fun bind(item: Review) {
             binding.userName.text = item.user
-            binding.userImage.setImageResource(item.profileImageResourceId)
+            binding.userImage.setImageURI(Uri.parse(item.userImageUriString))
             binding.showRating.text = item.rating.toString()
 
             if (item.comment.isNullOrEmpty()) {

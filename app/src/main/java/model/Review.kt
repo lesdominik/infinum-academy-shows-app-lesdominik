@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 
 data class Review(
     val user: String,
-    @DrawableRes val profileImageResourceId: Int,
+    val userImageUriString: String,
     val rating: Int,
     val comment: String?
 )

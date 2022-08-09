@@ -16,4 +16,7 @@
     <string name="reviewDetails">%1$s reviews, %2$s average</string>
     <string name="show_details_title">The Office</string>
     <string name="no_shows_text">Your shows are not showing. Get it?</string>
+    <string name="remember_me_checkbox">Remember me</string>
+    <string name="logout_button">Logout</string>
+    <string name="change_photo">Change profile photo</string>
 </resources>

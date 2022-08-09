@@ -11,7 +11,9 @@
 
         <action
             android:id="@+id/toShowsFragment"
-            app:destination="@id/showsFragment"/>
+            app:destination="@id/showsFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -20,12 +22,18 @@
         tools:layout="@layout/fragment_shows">
 
         <argument
-            android:name="username"
+            android:name="userEmail"
             app:argType="string"/>
 
         <action
             android:id="@+id/toFragmentShowDetails"
             app:destination="@id/fragmentShowDetails"/>
+
+        <action
+            android:id="@+id/toLoginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/showsFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -46,7 +54,7 @@
             app:argType="string"/>
 
         <argument
-            android:name="username"
+            android:name="userEmail"
             app:argType="string"/>
     </fragment>
 

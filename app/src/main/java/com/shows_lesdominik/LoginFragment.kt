@@ -1,12 +1,16 @@
 package com.shows_lesdominik
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.shows_lesdominik.databinding.FragmentLoginBinding
 
@@ -14,6 +18,16 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() =_binding!!
+
+    private val viewModel by viewModels<LoginViewModel>()
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +40,12 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getUserEmail(sharedPreferences)
+        viewModel.userEmail.observe(viewLifecycleOwner) { userEmail ->
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
+            findNavController().navigate(directions)
+        }
+
         initListeners()
     }
 
@@ -34,14 +54,14 @@ class LoginFragment : Fragment() {
         var emailCorrect = false
         var passwordCorrect = false
 
-        binding.emailEdiText.doAfterTextChanged {
+        binding.emailEdiText.doAfterTextChanged { email ->
 
             when {
-                it.toString().isEmpty() -> {
+                email.toString().isEmpty() -> {
                     binding.emailTextField.error = null
                     emailCorrect = false
                 }
-                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
+                Patterns.EMAIL_ADDRESS.matcher(email.toString()).matches() -> {
                     binding.emailTextField.error = null
                     emailCorrect = true
                 }
@@ -54,14 +74,14 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.passwordEditText.doAfterTextChanged {
+        binding.passwordEditText.doAfterTextChanged { password ->
 
             when {
-                it.toString().isEmpty() -> {
+                password.toString().isEmpty() -> {
                     binding.passwordTextField.error = null
                     passwordCorrect = false
                 }
-                it.toString().length < 6 -> {
+                password.toString().length < 6 -> {
                     binding.passwordTextField.error = "Minimum password length is 6 characters"
                     passwordCorrect = false
                 }
@@ -74,10 +94,16 @@ class LoginFragment : Fragment() {
         }
 
 
+        binding.rememberMeCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setRememberMeChecked(sharedPreferences, isChecked)
+        }
+
+
         binding.loginButton.setOnClickListener {
-            val splitUsername = binding.emailEdiText.text.toString().split("@")
-            val username = splitUsername[0]
-            val directions = LoginFragmentDirections.toShowsFragment(username)
+            val userEmail = binding.emailEdiText.text.toString()
+            viewModel.storeUserEmail(sharedPreferences, userEmail)
+
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
             findNavController().navigate(directions)
         }
 
