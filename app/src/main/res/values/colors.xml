@@ -13,4 +13,5 @@
     <color name="welcome_text">#808080</color>
     <color name="button_purple">#52368C</color>
     <color name="light_grey">#999999</color>
+    <color name="dark_theme_dialog">#353535</color>
 </resources>

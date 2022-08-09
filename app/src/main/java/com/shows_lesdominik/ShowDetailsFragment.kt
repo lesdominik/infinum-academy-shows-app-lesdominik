@@ -52,7 +52,7 @@ class ShowDetailsFragment : Fragment() {
         viewModel.setShowDetails(args.showName, args.pictureId, args.details)
 
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showTitle.text = show.name
+            binding.showDetailsToolbar.title = show.name
             binding.detailsImage.setImageResource(show.imageResourceId)
             binding.showDetails.text = show.description
         }
@@ -81,7 +81,7 @@ class ShowDetailsFragment : Fragment() {
             showAddReviewBottomSheet()
         }
 
-        binding.backArrow.setOnClickListener {
+        binding.showDetailsToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -98,10 +98,7 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.showRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            bottomSheetBinding.submitButton.isEnabled = when {
-                rating > 0 -> true
-                else -> false
-            }
+            bottomSheetBinding.submitButton.isEnabled = rating > 0
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
@@ -112,16 +109,14 @@ class ShowDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addReviewToList(rating: Int, comment: String?) {
+    private fun addReviewToList(rating: Int, comment: String?) = with(binding) {
         viewModel.createReview(sharedPreferences, args.userEmail, rating, comment)
 
-        binding.noReviewsText.isVisible = false
-        binding.reviewRecycle.isVisible = true
-        binding.reviewDetails.isVisible = true
-        binding.reviewRatingBar.isVisible = true
+        noReviewsText.isVisible = false
+        reviewVisibilityGroup.isVisible = true
 
-        binding.reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-        binding.reviewRatingBar.rating = adapter.getAverageRating().toFloat()
+        reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
+        reviewRatingBar.rating = adapter.getAverageRating().toFloat()
     }
 
 

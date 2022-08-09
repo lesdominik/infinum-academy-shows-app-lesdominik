@@ -12,7 +12,7 @@ class ShowsAdapter(
 ) : RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
-        val binding = ViewShowItemBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ViewShowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return  ShowViewHolder(binding)
     }
 
@@ -24,12 +24,12 @@ class ShowsAdapter(
 
     inner class ShowViewHolder(private val binding: ViewShowItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Show) {
-            binding.showItemTitle.text = item.name
-            binding.showItemImage.setImageResource(item.imageResourceId)
-            binding.showItemDescription.text = item.description
+        fun bind(item: Show) = with(binding) {
+            showItemTitle.text = item.name
+            showItemImage.setImageResource(item.imageResourceId)
+            showItemDescription.text = item.description
 
-            binding.cardContainer.setOnClickListener {
+            cardContainer.setOnClickListener {
                 onItemClickCallback(item)
             }
         }

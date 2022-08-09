@@ -13,8 +13,9 @@
     <string name="dialog_title">Write a review</string>
     <string name="review_comment">Comment</string>
     <string name="submit_button">Submit</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reviewDetails">%1$s reviews, %2$s average</string>
+    <string name="show_details_title">The Office</string>
+    <string name="no_shows_text">Your shows are not showing. Get it?</string>
     <string name="remember_me_checkbox">Remember me</string>
     <string name="logout_button">Logout</string>
     <string name="change_photo">Change profile photo</string>

@@ -82,15 +82,12 @@ class ShowsFragment : Fragment() {
     private fun initListeners() {
 
         binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
-            when {
-                isChecked -> {
-                    binding.showsRecycler.isVisible = false
-                    binding.noShowsView.isVisible = true
-                }
-                else -> {
-                    binding.showsRecycler.isVisible = true
-                    binding.noShowsView.isVisible = false
-                }
+            if (isChecked) {
+                binding.showsRecycler.isVisible = false
+                binding.noShowsView.isVisible = true
+            } else {
+                binding.showsRecycler.isVisible = true
+                binding.noShowsView.isVisible = false
             }
         }
 
