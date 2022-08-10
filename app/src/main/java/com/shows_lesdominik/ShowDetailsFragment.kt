@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -25,7 +27,9 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var adapter: ReviewsAdapter
     private val args by navArgs<ShowDetailsFragmentArgs>()
-    private val viewModel by viewModels<ShowDetailsViewModel>()
+    private val viewModel: ShowDetailsViewModel by viewModels {
+        ShowDetailsViewModelFactory((activity?.application as ShowsApplication).database)
+    }
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -47,6 +51,20 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initShowDetails()
+        initReviewsRecycler()
+        initListeners()
+    }
+
+    private fun initShowDetails() {
+        if (InternetConnectionUtil.isConnected(requireContext())) {
+            fetchShowDetailsFromApi()
+        } else {
+            loadShowDetailsFromDatabase()
+        }
+    }
+
+    private fun fetchShowDetailsFromApi() {
         viewModel.getShowDetails(args.showId)
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
             binding.showDetailsToolbar.title = show.title
@@ -61,12 +79,41 @@ class ShowDetailsFragment : Fragment() {
             binding.loadingShowDetails.isVisible = false
             binding.showDetailsGroup.isVisible = true
         }
+    }
 
-        initReviewsRecycler()
-        initListeners()
+    private fun loadShowDetailsFromDatabase() {
+        viewModel.getShowDetailsFromDatabase(args.showId).observe(viewLifecycleOwner) { showEntity ->
+            binding.showDetailsToolbar.title = showEntity.title
+            Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
+            binding.showDetails.text = showEntity.description
+
+            if (showEntity.averageRating != null) {
+                binding.reviewDetails.text = getString(R.string.reviewDetails, showEntity.noOfReviews, showEntity.averageRating)
+                binding.reviewRatingBar.rating = showEntity.averageRating
+            }
+
+            binding.loadingShowDetails.isVisible = false
+            binding.showDetailsGroup.isVisible = true
+        }
     }
 
     private fun initReviewsRecycler() {
+        if (InternetConnectionUtil.isConnected(requireContext())) {
+           fetchReviewsFromApi()
+        } else {
+            loadReviewsFromDatabase()
+        }
+
+        viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
+            if (review != null) {
+                adapter.addItem(review)
+
+                binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
+            }
+        }
+    }
+
+    private fun fetchReviewsFromApi() {
         viewModel.getShowReviews(args.showId)
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
             if (reviews.isEmpty()) {
@@ -83,19 +130,41 @@ class ShowDetailsFragment : Fragment() {
                 binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             }
         }
+    }
 
-        viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
-            if (review != null) {
-                adapter.addItem(review)
+    private fun loadReviewsFromDatabase() {
+        viewModel.getReviewsFromDatabase(args.showId).observe(viewLifecycleOwner) { reviewsEntity ->
+            if (reviewsEntity.isEmpty()) {
+                binding.noReviewsText.isVisible = true
+                binding.reviewsGroup.isVisible = false
+            } else {
+                binding.noReviewsText.isVisible = false
+                binding.reviewsGroup.isVisible = true
 
-                binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
+                adapter = ReviewsAdapter(reviewsEntity.map { reviewEntity ->
+                    Review(
+                        reviewEntity.id,
+                        reviewEntity.comment,
+                        reviewEntity.rating,
+                        reviewEntity.showId,
+                        User(reviewEntity.userId, reviewEntity.userEmail, reviewEntity.userImageUrl)
+                    )
+                })
+                binding.reviewRecycle.adapter = adapter
+                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+
+                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             }
         }
     }
 
     private fun initListeners() {
         binding.reviewButton.setOnClickListener {
-            showAddReviewBottomSheet()
+            if (InternetConnectionUtil.isConnected(requireContext())) {
+                showAddReviewBottomSheet()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.showDetailsToolbar.setNavigationOnClickListener {

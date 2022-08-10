@@ -21,8 +21,8 @@ class LoginViewModel : ViewModel() {
     private val _loginResultLiveData = MutableLiveData<Boolean>()
     val loginResultLiveData: LiveData<Boolean> = _loginResultLiveData
 
-    private val _userEmailLiveData = MutableLiveData<String>()
-    val userEmailLiveData: LiveData<String> = _userEmailLiveData
+    private val _alreadyAnimatedLiveData = MutableLiveData<Boolean>()
+    val alreadyAnimatedLiveData: LiveData<Boolean> = _alreadyAnimatedLiveData
 
     private val _isLoginButtonEnabledLiveData = MutableLiveData<Boolean>()
     val isLoginButtonEnabledLiveData: LiveData<Boolean> = _isLoginButtonEnabledLiveData
@@ -31,12 +31,12 @@ class LoginViewModel : ViewModel() {
     private var passwordNotEmpty = false
 
 
-    fun getUserEmail(sharedPreferences: SharedPreferences) {
-        val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
-        if (rememberMeChecked) {
-            _userEmailLiveData.value = sharedPreferences.getString(USER_EMAIL, "")
-        } else {
-            _userEmailLiveData.value = ""
+    private var alreadyAnimated = false
+
+    fun animateOnlyAfterSplash() {
+        _alreadyAnimatedLiveData.value = alreadyAnimated
+        if (!alreadyAnimated) {
+            alreadyAnimated = true
         }
     }
 

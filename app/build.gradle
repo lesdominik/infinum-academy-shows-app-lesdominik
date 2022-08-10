@@ -5,6 +5,8 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdk 32
 
@@ -38,11 +40,15 @@ android {
 
 dependencies {
 
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    implementation "androidx.room:room-ktx:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
+
     debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
-
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'

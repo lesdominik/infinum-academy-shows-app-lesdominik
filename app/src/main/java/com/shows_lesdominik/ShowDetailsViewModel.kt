@@ -3,11 +3,12 @@ package com.shows_lesdominik
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.concurrent.Executors
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShowDetailsViewModel : ViewModel() {
+class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
 
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
@@ -46,11 +47,16 @@ class ShowDetailsViewModel : ViewModel() {
             })
     }
 
+    fun getShowDetailsFromDatabase(showId: String): LiveData<ShowEntity> {
+        return database.showDao().getShow(showId)
+    }
+
     fun getShowReviews(showId: String) {
         ApiModule.retrofit.getShowReviews(showId)
             .enqueue(object: Callback<ReviewListResponse> {
                 override fun onResponse(call: Call<ReviewListResponse>, response: Response<ReviewListResponse>) {
                     if (response.isSuccessful) {
+                        response.body()?.let { addReviewsToDatabase(it.reviews) }
                         _reviewsLiveData.value = response.body()?.reviews
                     } else {
                         _reviewsLiveData.value = emptyList()
@@ -62,6 +68,26 @@ class ShowDetailsViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun addReviewsToDatabase(reviews: List<Review>) {
+        Executors.newSingleThreadExecutor().execute {
+            database.reviewDao().createReviews(reviews.map { review ->
+                ReviewEntity(
+                    review.id,
+                    review.comment,
+                    review.rating,
+                    review.showId,
+                    review.user.id,
+                    review.user.email,
+                    review.user.imageUrl
+                )
+            })
+        }
+    }
+
+    fun getReviewsFromDatabase(showId: String): LiveData<List<ReviewEntity>> {
+        return database.reviewDao().getAllReviews(showId)
     }
 
     fun addReview(rating: Int, comment: String?, showId: String) {
@@ -77,6 +103,8 @@ class ShowDetailsViewModel : ViewModel() {
             .enqueue(object: Callback<ReviewCreateResponse> {
                 override fun onResponse(call: Call<ReviewCreateResponse>, response: Response<ReviewCreateResponse>) {
                     if (response.isSuccessful) {
+                        val review = response.body()?.review
+                        addReviewsToDatabase(listOf(review) as List<Review>)
                         _newReviewLiveData.value = response.body()?.review
                     }
                     _newReviewLiveData.value = null
