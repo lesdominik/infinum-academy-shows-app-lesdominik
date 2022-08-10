@@ -98,6 +98,7 @@ class LoginFragment : Fragment() {
         scaleX = 0f
         scaleY = 0f
         animate()
+            .setStartDelay(1500)
             .scaleX(1f)
             .scaleY(1f)
             .setDuration(1500)

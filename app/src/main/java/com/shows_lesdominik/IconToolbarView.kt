@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.CustomToolbarBinding
 
-class CustomToolbar @JvmOverloads constructor(
+class IconToolbarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
