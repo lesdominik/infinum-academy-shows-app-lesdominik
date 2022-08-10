@@ -32,9 +32,9 @@ class LoginViewModel : ViewModel() {
 
 
     fun getUserEmail(sharedPreferences: SharedPreferences) {
-        val rememberMeChecked = sharedPreferences.getBoolean("REMEMBER_ME_CHECKED", false)
+        val rememberMeChecked = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
         if (rememberMeChecked) {
-            _userEmailLiveData.value = sharedPreferences.getString("USER_EMAIL", "")
+            _userEmailLiveData.value = sharedPreferences.getString(USER_EMAIL, "")
         } else {
             _userEmailLiveData.value = ""
         }

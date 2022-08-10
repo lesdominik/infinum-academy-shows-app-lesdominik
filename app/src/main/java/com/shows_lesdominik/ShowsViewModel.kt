@@ -18,7 +18,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val USER_EMAIL = "USER_EMAIL"
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsViewModel : ViewModel() {
@@ -70,17 +69,11 @@ class ShowsViewModel : ViewModel() {
             })
     }
 
-    fun setProfileImage(sharedPreferences: SharedPreferences, file: File) {
-        val email = sharedPreferences.getString(USER_EMAIL, "")
+    fun setProfileImage(file: File) {
+        val multipartBody = MultipartBody.Part.createFormData("image", "avatar.jpg",
+            file.asRequestBody("multipart/form-data".toMediaType()))
 
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("email", email.toString())
-            .addFormDataPart("image", "avatar.jpg",
-                file.asRequestBody("multipart/form-data".toMediaType()))
-            .build()
-
-        ApiModule.retrofit.storeUserImage(requestBody)
+        ApiModule.retrofit.storeUserImage(multipartBody)
             .enqueue(object: Callback<StoreImageResponse> {
                 override fun onResponse(call: Call<StoreImageResponse>, response: Response<StoreImageResponse>) {
                     if (response.isSuccessful) {

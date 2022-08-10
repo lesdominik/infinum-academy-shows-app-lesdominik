@@ -46,7 +46,7 @@ class ShowsFragment : Fragment() {
                 bottomSheetBinding.userDetailsImage.setImageURI(uri)
 
                 FileUtil.getImageFile(requireContext())?.let {
-                    viewModel.setProfileImage(sharedPreferences, it)
+                    viewModel.setProfileImage(it)
                 }
             }
         }
@@ -159,6 +159,7 @@ class ShowsFragment : Fragment() {
     private fun takeImage() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
+                latestTmpUri = uri
                 takeImageResult.launch(uri)
             }
         }

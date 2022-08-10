@@ -33,7 +33,7 @@ interface ShowsApiService {
 
     @PUT("/users")
     @Multipart
-    fun storeUserImage(@Part requestBody: MultipartBody): Call<StoreImageResponse>
+    fun storeUserImage(@Part requestBodyPart: MultipartBody.Part): Call<StoreImageResponse>
 
     @GET("/users/me")
     fun getUserInfo(): Call<UserInfoResponse>

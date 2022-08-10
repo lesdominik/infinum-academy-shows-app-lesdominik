@@ -10,6 +10,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
+private const val ACCESS_TOKEN = "ACCESS_TOKEN"
+private const val USER_EMAIL = "USER_EMAIL"
+private const val CLIENT = "CLIENT"
+
 object ApiModule {
     private const val BASE_URL = "https://tv-shows.infinum.academy/"
 
@@ -32,9 +36,9 @@ object ApiModule {
 
 class AuthInterceptor(private val sharedPreferences: SharedPreferences) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
-        val uid = sharedPreferences.getString("USER_EMAIL", null)
-        val client = sharedPreferences.getString("CLIENT", null)
+        val accessToken = sharedPreferences.getString(ACCESS_TOKEN, null)
+        val uid = sharedPreferences.getString(USER_EMAIL, null)
+        val client = sharedPreferences.getString(CLIENT, null)
         var request = chain.request()
 
         request = request.newBuilder()
