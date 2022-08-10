@@ -139,6 +139,19 @@ class ShowDetailsFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
+            if (review != null) {
+                adapter.addItem(review)
+
+                val reviewCount = sharedPreferences.getInt("NO_OF_REVIEWS", noOfReviews)
+                sharedPreferences.edit {
+                    putInt("NO_OF_REVIEWS", reviewCount + 1)
+                }
+
+                binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"
+            }
+        }
     }
 
     private fun initListeners() {
@@ -175,18 +188,7 @@ class ShowDetailsFragment : Fragment() {
 
         bottomSheetBinding.submitButton.setOnClickListener {
             viewModel.addReview(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString().trim(), args.showId)
-            viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
-                if (review != null) {
-                    adapter.addItem(review)
 
-                    val reviewCount = sharedPreferences.getInt("NO_OF_REVIEWS", noOfReviews)
-                    sharedPreferences.edit {
-                        putInt("NO_OF_REVIEWS", reviewCount + 1)
-                    }
-
-                    binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"
-                }
-            }
             dialog.dismiss()
         }
 
