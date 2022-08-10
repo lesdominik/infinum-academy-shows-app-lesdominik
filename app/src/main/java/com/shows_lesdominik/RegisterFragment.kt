@@ -82,7 +82,7 @@ class RegisterFragment : Fragment() {
                     emailCorrect = true
                 }
                 else -> {
-                    binding.emailTextField.error = "Invalid email address"
+                    binding.emailTextField.error = getString(R.string.invalid_email_address)
                     emailCorrect = false
                 }
             }
@@ -98,7 +98,7 @@ class RegisterFragment : Fragment() {
                     passwordCorrect = false
                 }
                 it.toString().length < 6 -> {
-                    binding.passwordTextField.error = "Minimum password length is 6 characters"
+                    binding.passwordTextField.error = getString(R.string.password_length_message)
                     passwordCorrect = false
                 }
                 else -> {
@@ -118,7 +118,7 @@ class RegisterFragment : Fragment() {
                     passwordRepeatCorrect = false
                 }
                 it.toString() != binding.passwordEditText.text.toString() -> {
-                    binding.repeatPasswordTextField.error = "Passwords don't match"
+                    binding.repeatPasswordTextField.error = getString(R.string.passwords_not_matching)
                     passwordRepeatCorrect = false
                 }
                 else -> {

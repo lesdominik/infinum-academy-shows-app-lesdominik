@@ -174,7 +174,7 @@ class ShowsFragment : Fragment() {
             if (InternetConnectionUtil.isConnected(requireContext())) {
                 takeImage()
             } else {
-                Toast.makeText(requireContext(), "No Internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -189,7 +189,7 @@ class ShowsFragment : Fragment() {
     private fun showAlertDialog() {
         val alertDialog = AlertDialog.Builder(requireContext())
 
-        alertDialog.setMessage("Do you really want to log out?")
+        alertDialog.setMessage(getString(R.string.logout_alert_dialog_message))
             .setPositiveButton("Yes") { dialog, _ ->
                 sharedPreferences.edit {
                     putBoolean(REMEMBER_ME_CHECKED, false)

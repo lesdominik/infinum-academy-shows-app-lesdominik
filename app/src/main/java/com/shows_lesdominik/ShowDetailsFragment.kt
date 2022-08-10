@@ -81,7 +81,7 @@ class ShowDetailsFragment : Fragment() {
             noOfReviews = show.noOfReviews
             showAvgRating = show.averageRating
 
-            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+            binding.reviewDetails.text = getString(R.string.reviewDetails, noOfReviews, showAvgRating)
             binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
 
             binding.loadingShowDetails.isVisible = false
@@ -98,7 +98,7 @@ class ShowDetailsFragment : Fragment() {
             noOfReviews = sharedPreferences.getInt(NO_OF_REVIEWS, showEntity.noOfReviews)
             showAvgRating = showEntity.averageRating
 
-            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+            binding.reviewDetails.text = getString(R.string.reviewDetails, noOfReviews, showAvgRating)
             binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
 
             binding.loadingShowDetails.isVisible = false
@@ -122,7 +122,7 @@ class ShowDetailsFragment : Fragment() {
                     putInt(NO_OF_REVIEWS, reviewCount + 1)
                 }
 
-                binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"
+                binding.reviewDetails.text = getString(R.string.reviewDetails, reviewCount+1, showAvgRating)
             }
         }
     }
@@ -177,7 +177,7 @@ class ShowDetailsFragment : Fragment() {
             if (InternetConnectionUtil.isConnected(requireContext())) {
                 showAddReviewBottomSheet()
             } else {
-                Toast.makeText(requireContext(), "No Internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
             }
         }
 

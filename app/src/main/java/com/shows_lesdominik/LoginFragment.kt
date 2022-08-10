@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (args.afterRegistration) {
-            binding.title.text = "Registration successful!"
+            binding.title.text = getString(R.string.registration_successful)
             binding.registerTextButton.isVisible = false
         }
 
@@ -89,7 +89,7 @@ class LoginFragment : Fragment() {
             loginButton.isEnabled = false
             emailEdiText.setText("")
             passwordEditText.setText("")
-            message.text = "Login failed. Please register or try again"
+            message.text = getString(R.string.login_failed)
             message.setTextColor(Color.RED)
         }
     }
