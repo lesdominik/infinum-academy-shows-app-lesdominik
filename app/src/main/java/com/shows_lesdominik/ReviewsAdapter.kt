@@ -10,10 +10,10 @@ import com.shows_lesdominik.databinding.ItemReviewBinding
 
 class ReviewsAdapter(
     private var items: List<Review>
-    ) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
+) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ReviewViewHolder(binding)
     }
 

@@ -1,9 +1,8 @@
 package com.shows_lesdominik
 
-import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val USER_EMAIL = "USER_EMAIL"
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
 
@@ -29,7 +28,11 @@ class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
     private val _userLiveData = MutableLiveData<User>()
     val userLiveData: LiveData<User> = _userLiveData
 
-    private lateinit var sharedPreferences: SharedPreferences
+    fun setRememberMeChecked(sharedPreferences: SharedPreferences) {
+        sharedPreferences.edit {
+            putBoolean(REMEMBER_ME_CHECKED, false)
+        }
+    }
 
     fun getShows() {
         ApiModule.retrofit.getShows()
@@ -79,20 +82,11 @@ class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
             })
     }
 
-    fun setProfileImage(context: Context) {
-        sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+    fun setProfileImage(file: File) {
+        val multipartBody = MultipartBody.Part.createFormData("image", "avatar.jpg",
+            file.asRequestBody("multipart/form-data".toMediaType()))
 
-        val file = FileUtil.getImageFile(context)!!
-        val email = sharedPreferences.getString(USER_EMAIL, "")
-
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("email", email.toString())
-            .addFormDataPart("image", "avatar.jpg",
-                file.asRequestBody("multipart/form-data".toMediaType()))
-            .build()
-
-        ApiModule.retrofit.storeUserImage(requestBody)
+        ApiModule.retrofit.storeUserImage(multipartBody)
             .enqueue(object: Callback<StoreImageResponse> {
                 override fun onResponse(call: Call<StoreImageResponse>, response: Response<StoreImageResponse>) {
                     if (response.isSuccessful) {

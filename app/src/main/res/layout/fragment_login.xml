@@ -30,15 +30,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6"
+            app:trackCornerRadius="8dp"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/loginGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="logoImage, logoText, title, message, emailTextField, passwordTextField, rememberMeCheckBox, loginButton, registerTextButton"/>
+
         <ImageView
             android:id="@+id/logoImage"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="184dp"
-            android:layout_marginStart="56dp"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_triangle"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_marginTop="184dp"
+            android:layout_marginStart="56dp"/>
 
         <TextView
             android:id="@+id/logoText"
@@ -49,7 +71,7 @@
             android:fontFamily="@font/roboto_bold"
             android:text="@string/app_logo"
             android:textColor="@color/white"
-            android:textSize="34sp"
+            android:textSize="34dp"
             app:layout_constraintStart_toEndOf="@id/logoImage"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -168,8 +190,9 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerTextButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:text="@string/register_text_button"
             android:textAllCaps="false"
             android:fontFamily="@font/roboto_bold"

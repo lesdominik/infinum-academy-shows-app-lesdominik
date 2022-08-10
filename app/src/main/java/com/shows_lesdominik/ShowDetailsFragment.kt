@@ -20,8 +20,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogAddReviewBinding
 import com.shows_lesdominik.databinding.FragmentShowDetailsBinding
 
-private const val NO_OF_REVIEWS = "NO_OF_REVIEWS"
-
 class ShowDetailsFragment : Fragment() {
 
     private var _binding: FragmentShowDetailsBinding? = null
@@ -35,8 +33,6 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var noOfReviews: Int = 0
-    private var showAvgRating: Float? = 0F
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,18 +67,14 @@ class ShowDetailsFragment : Fragment() {
     private fun fetchShowDetailsFromApi() {
         viewModel.getShowDetails(args.showId)
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showTitle.text = show.title
+            binding.showDetailsToolbar.title = show.title
             Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
 
-            sharedPreferences.edit {
-                putInt(NO_OF_REVIEWS, show.noOfReviews)
+            if (show.averageRating != null) {
+                binding.reviewDetails.text = getString(R.string.reviewDetails, show.noOfReviews, show.averageRating)
+                binding.reviewRatingBar.rating = show.averageRating
             }
-            noOfReviews = show.noOfReviews
-            showAvgRating = show.averageRating
-
-            binding.reviewDetails.text = getString(R.string.reviewDetails, noOfReviews, showAvgRating)
-            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
 
             binding.loadingShowDetails.isVisible = false
             binding.showDetailsGroup.isVisible = true
@@ -91,15 +83,14 @@ class ShowDetailsFragment : Fragment() {
 
     private fun loadShowDetailsFromDatabase() {
         viewModel.getShowDetailsFromDatabase(args.showId).observe(viewLifecycleOwner) { showEntity ->
-            binding.showTitle.text = showEntity.title
+            binding.showDetailsToolbar.title = showEntity.title
             Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = showEntity.description
 
-            noOfReviews = sharedPreferences.getInt(NO_OF_REVIEWS, showEntity.noOfReviews)
-            showAvgRating = showEntity.averageRating
-
-            binding.reviewDetails.text = getString(R.string.reviewDetails, noOfReviews, showAvgRating)
-            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+            if (showEntity.averageRating != null) {
+                binding.reviewDetails.text = getString(R.string.reviewDetails, showEntity.noOfReviews, showEntity.averageRating)
+                binding.reviewRatingBar.rating = showEntity.averageRating
+            }
 
             binding.loadingShowDetails.isVisible = false
             binding.showDetailsGroup.isVisible = true
@@ -117,12 +108,7 @@ class ShowDetailsFragment : Fragment() {
             if (review != null) {
                 adapter.addItem(review)
 
-                val reviewCount = sharedPreferences.getInt(NO_OF_REVIEWS, noOfReviews)
-                sharedPreferences.edit {
-                    putInt(NO_OF_REVIEWS, reviewCount + 1)
-                }
-
-                binding.reviewDetails.text = getString(R.string.reviewDetails, reviewCount+1, showAvgRating)
+                binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
             }
         }
     }
@@ -181,7 +167,7 @@ class ShowDetailsFragment : Fragment() {
             }
         }
 
-        binding.backArrow.setOnClickListener {
+        binding.showDetailsToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -198,15 +184,11 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.showRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            bottomSheetBinding.submitButton.isEnabled = when {
-                rating > 0 -> true
-                else -> false
-            }
+            bottomSheetBinding.submitButton.isEnabled = rating > 0
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
             viewModel.addReview(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString().trim(), args.showId)
-
             dialog.dismiss()
         }
 

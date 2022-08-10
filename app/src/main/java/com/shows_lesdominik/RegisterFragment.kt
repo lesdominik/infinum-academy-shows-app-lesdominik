@@ -32,17 +32,17 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ApiModule.initRetrofit(requireContext())
-
         viewModel.registrationResultLiveData.observe(viewLifecycleOwner) { registrationSuccessful ->
-            registrationOutcome(registrationSuccessful)
+            binding.registerGroup.isVisible = true
+            binding.loadingRegister.isVisible = false
+            afterRegistrationValidation(registrationSuccessful)
         }
 
         initListeners()
         initRegisterButton()
     }
 
-    private fun registrationOutcome(registrationSuccessful: Boolean) = with(binding) {
+    private fun afterRegistrationValidation(registrationSuccessful: Boolean) = with(binding) {
         if (registrationSuccessful) {
             val destination = RegisterFragmentDirections.toLoginFragment(true)
             findNavController().navigate(destination)
@@ -57,6 +57,8 @@ class RegisterFragment : Fragment() {
 
     private fun initRegisterButton() = with(binding) {
         registerButton.setOnClickListener {
+            binding.registerGroup.isVisible = false
+            binding.loadingRegister.isVisible = true
             viewModel.onRegisterButtonClicked(
                 email = emailEdiText.text.toString(),
                 password = passwordEditText.text.toString(),
@@ -66,68 +68,54 @@ class RegisterFragment : Fragment() {
     }
 
     private fun initListeners() {
-        var emailCorrect = false
-        var passwordCorrect = false
-        var passwordRepeatCorrect = false
+        binding.emailEdiText.doAfterTextChanged { email ->
+            viewModel.emailValidation(email.toString())
 
-        binding.emailEdiText.doAfterTextChanged {
-
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.emailErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.emailTextField.error = null
-                    emailCorrect = false
-                }
-                Patterns.EMAIL_ADDRESS.matcher(it.toString()).matches() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = true
-                }
-                else -> {
-                    binding.emailTextField.error = getString(R.string.invalid_email_address)
-                    emailCorrect = false
+                } else {
+                    binding.emailTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
+
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
 
 
-        binding.passwordEditText.doAfterTextChanged {
+        binding.passwordEditText.doAfterTextChanged { password ->
+            viewModel.passwordValidation(password.toString())
 
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.passwordErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.passwordTextField.error = null
-                    passwordCorrect = false
-                }
-                it.toString().length < 6 -> {
-                    binding.passwordTextField.error = getString(R.string.password_length_message)
-                    passwordCorrect = false
-                }
-                else -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = true
+                } else {
+                    binding.passwordTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
+
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
 
 
-        binding.repeatPasswordEditText.doAfterTextChanged {
+        binding.repeatPasswordEditText.doAfterTextChanged { repeatPassword ->
+            viewModel.repeatPasswordValidation(repeatPassword.toString())
 
-            when {
-                it.toString().isEmpty() -> {
+            viewModel.repeatPasswordErrorLiveData.observe(viewLifecycleOwner) { errorInt ->
+                if (errorInt == null) {
                     binding.repeatPasswordTextField.error = null
-                    passwordRepeatCorrect = false
-                }
-                it.toString() != binding.passwordEditText.text.toString() -> {
-                    binding.repeatPasswordTextField.error = getString(R.string.passwords_not_matching)
-                    passwordRepeatCorrect = false
-                }
-                else -> {
-                    binding.repeatPasswordTextField.error = null
-                    passwordRepeatCorrect = true
+                } else {
+                    binding.repeatPasswordTextField.error = getString(errorInt)
                 }
             }
-            binding.registerButton.isEnabled = emailCorrect && passwordCorrect && passwordRepeatCorrect
 
+            viewModel.isRegisterButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.registerButton.isEnabled = isEnabled
+            }
         }
     }
 

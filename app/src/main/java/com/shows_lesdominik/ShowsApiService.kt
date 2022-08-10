@@ -5,8 +5,10 @@ import okhttp3.Request
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ShowsApiService {
@@ -30,7 +32,8 @@ interface ShowsApiService {
     fun createShowReview(@Body request: ReviewCreateRequest): Call<ReviewCreateResponse>
 
     @PUT("/users")
-    fun storeUserImage(@Body requestBody: MultipartBody): Call<StoreImageResponse>
+    @Multipart
+    fun storeUserImage(@Part requestBodyPart: MultipartBody.Part): Call<StoreImageResponse>
 
     @GET("/users/me")
     fun getUserInfo(): Call<UserInfoResponse>

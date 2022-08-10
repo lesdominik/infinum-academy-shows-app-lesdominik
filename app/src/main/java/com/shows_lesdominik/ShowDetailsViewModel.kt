@@ -19,16 +19,29 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
     private val _showDetailsLiveData = MutableLiveData<Show>()
     val showDetailsLiveData: LiveData<Show> = _showDetailsLiveData
 
+    private var noOfReviews: Int? = null
+    private var showAvgRating: Float? = null
+
+
+    fun getNoOfReviews() = noOfReviews
+
+    fun getShowAvgRating() = showAvgRating
 
     fun getShowDetails(showId: String) {
         ApiModule.retrofit.getShowDetails(showId)
             .enqueue(object: Callback<ShowDetailsResponse> {
                 override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
-                    _showDetailsLiveData.value = response.body()?.show
+                    if (response.isSuccessful) {
+                        _showDetailsLiveData.value = response.body()?.show
+                        noOfReviews = response.body()?.show?.noOfReviews
+                        showAvgRating = response.body()?.show?.averageRating
+                    } else {
+                        _showDetailsLiveData.value = null
+                    }
                 }
 
                 override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
+                    _showDetailsLiveData.value = null
                 }
 
             })
@@ -83,6 +96,8 @@ class ShowDetailsViewModel(private val database: ShowsDatabase) : ViewModel() {
             comment = comment,
             showId = showId.toInt()
         )
+
+        noOfReviews = noOfReviews?.plus(1)
 
         ApiModule.retrofit.createShowReview(reviewCreateRequest)
             .enqueue(object: Callback<ReviewCreateResponse> {

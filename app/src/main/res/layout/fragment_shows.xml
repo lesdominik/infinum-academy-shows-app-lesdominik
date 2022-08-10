@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="Your shows are not showing. Get it?"
+        android:text="@string/no_shows_text"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
