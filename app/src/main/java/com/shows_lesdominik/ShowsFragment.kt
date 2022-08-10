@@ -108,41 +108,49 @@ class ShowsFragment : Fragment() {
 
     private fun initShowsRecycler() {
         if (InternetConnectionUtil.isConnected(requireContext())) {
-            viewModel.getShows()
-            viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
-                binding.loadingShows.isVisible = false
-                if (shows.isEmpty()) {
-                    binding.showsRecycler.isVisible = false
-                    binding.noShowsView.isVisible = true
-                } else {
-                    binding.showsRecycler.isVisible = true
-                    binding.noShowsView.isVisible = false
-
-                    binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
-                        val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
-                        findNavController().navigate(directions)
-                    }
-                    binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
-                }
-            }
+            fetchShowsFromApi()
         } else {
-            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
-                binding.loadingShows.isVisible = false
-                if (shows.isEmpty()) {
-                    binding.showsRecycler.isVisible = false
-                    binding.noShowsView.isVisible = true
-                } else {
-                    binding.showsRecycler.isVisible = true
-                    binding.noShowsView.isVisible = false
+            loadShowsFromDatabase()
+        }
+    }
 
-                    binding.showsRecycler.adapter = ShowsAdapter(shows.map { show ->
-                        Show(show.id, show.averageRating, show.description, show.imageUrl, show.noOfReviews, show.title)
-                    }) { show ->
-                        val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
-                        findNavController().navigate(directions)
-                    }
-                    binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+    private fun fetchShowsFromApi() {
+        viewModel.getShows()
+        viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
+            binding.loadingShows.isVisible = false
+            if (shows.isEmpty()) {
+                binding.showsRecycler.isVisible = false
+                binding.noShowsView.isVisible = true
+            } else {
+                binding.showsRecycler.isVisible = true
+                binding.noShowsView.isVisible = false
+
+                binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
+                    val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
+                    findNavController().navigate(directions)
                 }
+                binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
+    }
+
+    private fun loadShowsFromDatabase() {
+        viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
+            binding.loadingShows.isVisible = false
+            if (shows.isEmpty()) {
+                binding.showsRecycler.isVisible = false
+                binding.noShowsView.isVisible = true
+            } else {
+                binding.showsRecycler.isVisible = true
+                binding.noShowsView.isVisible = false
+
+                binding.showsRecycler.adapter = ShowsAdapter(shows.map { show ->
+                    Show(show.id, show.averageRating, show.description, show.imageUrl, show.noOfReviews, show.title)
+                }) { show ->
+                    val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, userEmail)
+                    findNavController().navigate(directions)
+                }
+                binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
             }
         }
     }

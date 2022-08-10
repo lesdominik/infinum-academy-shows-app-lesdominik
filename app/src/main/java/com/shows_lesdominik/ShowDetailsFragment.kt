@@ -62,84 +62,55 @@ class ShowDetailsFragment : Fragment() {
 
     private fun initShowDetails() {
         if (InternetConnectionUtil.isConnected(requireContext())) {
-            viewModel.getShowDetails(args.showId)
-            viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-                binding.showTitle.text = show.title
-                Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
-                binding.showDetails.text = show.description
-
-                sharedPreferences.edit {
-                    putInt(NO_OF_REVIEWS, show.noOfReviews)
-                }
-                noOfReviews = show.noOfReviews
-                showAvgRating = show.averageRating
-
-                binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
-                binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
-
-                binding.loadingShowDetails.isVisible = false
-                binding.showDetailsGroup.isVisible = true
-            }
+            fetchShowDetailsFromApi()
         } else {
-            viewModel.getShowDetailsFromDatabase(args.showId).observe(viewLifecycleOwner) { showEntity ->
-                binding.showTitle.text = showEntity.title
-                Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
-                binding.showDetails.text = showEntity.description
+            loadShowDetailsFromDatabase()
+        }
+    }
 
-                noOfReviews = sharedPreferences.getInt(NO_OF_REVIEWS, showEntity.noOfReviews)
-                showAvgRating = showEntity.averageRating
+    private fun fetchShowDetailsFromApi() {
+        viewModel.getShowDetails(args.showId)
+        viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
+            binding.showTitle.text = show.title
+            Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
+            binding.showDetails.text = show.description
 
-                binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
-                binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
-
-                binding.loadingShowDetails.isVisible = false
-                binding.showDetailsGroup.isVisible = true
+            sharedPreferences.edit {
+                putInt(NO_OF_REVIEWS, show.noOfReviews)
             }
+            noOfReviews = show.noOfReviews
+            showAvgRating = show.averageRating
+
+            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+
+            binding.loadingShowDetails.isVisible = false
+            binding.showDetailsGroup.isVisible = true
+        }
+    }
+
+    private fun loadShowDetailsFromDatabase() {
+        viewModel.getShowDetailsFromDatabase(args.showId).observe(viewLifecycleOwner) { showEntity ->
+            binding.showTitle.text = showEntity.title
+            Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
+            binding.showDetails.text = showEntity.description
+
+            noOfReviews = sharedPreferences.getInt(NO_OF_REVIEWS, showEntity.noOfReviews)
+            showAvgRating = showEntity.averageRating
+
+            binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
+            binding.reviewRatingBar.rating = showAvgRating?.toFloat() ?: 0F
+
+            binding.loadingShowDetails.isVisible = false
+            binding.showDetailsGroup.isVisible = true
         }
     }
 
     private fun initReviewsRecycler() {
         if (InternetConnectionUtil.isConnected(requireContext())) {
-            viewModel.getShowReviews(args.showId)
-            viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
-                if (reviews.isEmpty()) {
-                    binding.noReviewsText.isVisible = true
-                    binding.reviewsGroup.isVisible = false
-                } else {
-                    binding.noReviewsText.isVisible = false
-                    binding.reviewsGroup.isVisible = true
-
-                    adapter = ReviewsAdapter(reviews)
-                    binding.reviewRecycle.adapter = adapter
-                    binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
-
-                    binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-                }
-            }
+           fetchReviewsFromApi()
         } else {
-            viewModel.getReviewsFromDatabase(args.showId).observe(viewLifecycleOwner) { reviewsEntity ->
-                if (reviewsEntity.isEmpty()) {
-                    binding.noReviewsText.isVisible = true
-                    binding.reviewsGroup.isVisible = false
-                } else {
-                    binding.noReviewsText.isVisible = false
-                    binding.reviewsGroup.isVisible = true
-
-                    adapter = ReviewsAdapter(reviewsEntity.map { reviewEntity ->
-                        Review(
-                            reviewEntity.id,
-                            reviewEntity.comment,
-                            reviewEntity.rating,
-                            reviewEntity.showId,
-                            User(reviewEntity.userId, reviewEntity.userEmail, reviewEntity.userImageUrl)
-                        )
-                    })
-                    binding.reviewRecycle.adapter = adapter
-                    binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
-
-                    binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-                }
-            }
+            loadReviewsFromDatabase()
         }
 
         viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
@@ -152,6 +123,51 @@ class ShowDetailsFragment : Fragment() {
                 }
 
                 binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"
+            }
+        }
+    }
+
+    private fun fetchReviewsFromApi() {
+        viewModel.getShowReviews(args.showId)
+        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
+            if (reviews.isEmpty()) {
+                binding.noReviewsText.isVisible = true
+                binding.reviewsGroup.isVisible = false
+            } else {
+                binding.noReviewsText.isVisible = false
+                binding.reviewsGroup.isVisible = true
+
+                adapter = ReviewsAdapter(reviews)
+                binding.reviewRecycle.adapter = adapter
+                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+
+                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            }
+        }
+    }
+
+    private fun loadReviewsFromDatabase() {
+        viewModel.getReviewsFromDatabase(args.showId).observe(viewLifecycleOwner) { reviewsEntity ->
+            if (reviewsEntity.isEmpty()) {
+                binding.noReviewsText.isVisible = true
+                binding.reviewsGroup.isVisible = false
+            } else {
+                binding.noReviewsText.isVisible = false
+                binding.reviewsGroup.isVisible = true
+
+                adapter = ReviewsAdapter(reviewsEntity.map { reviewEntity ->
+                    Review(
+                        reviewEntity.id,
+                        reviewEntity.comment,
+                        reviewEntity.rating,
+                        reviewEntity.showId,
+                        User(reviewEntity.userId, reviewEntity.userEmail, reviewEntity.userImageUrl)
+                    )
+                })
+                binding.reviewRecycle.adapter = adapter
+                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
+
+                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             }
         }
     }
