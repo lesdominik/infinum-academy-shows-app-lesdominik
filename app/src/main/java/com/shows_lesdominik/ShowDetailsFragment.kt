@@ -49,7 +49,7 @@ class ShowDetailsFragment : Fragment() {
 
         viewModel.getShowDetails(args.showId)
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showTitle.text = show.title
+            binding.showDetailsToolbar.title = show.title
             Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
 
@@ -83,6 +83,14 @@ class ShowDetailsFragment : Fragment() {
                 binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             }
         }
+
+        viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
+            if (review != null) {
+                adapter.addItem(review)
+
+                binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
+            }
+        }
     }
 
     private fun initListeners() {
@@ -90,7 +98,7 @@ class ShowDetailsFragment : Fragment() {
             showAddReviewBottomSheet()
         }
 
-        binding.backArrow.setOnClickListener {
+        binding.showDetailsToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -112,13 +120,6 @@ class ShowDetailsFragment : Fragment() {
 
         bottomSheetBinding.submitButton.setOnClickListener {
             viewModel.addReview(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString().trim(), args.showId)
-            viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
-                if (review != null) {
-                    adapter.addItem(review)
-
-                    binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
-                }
-            }
             dialog.dismiss()
         }
 

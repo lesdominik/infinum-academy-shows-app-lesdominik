@@ -24,16 +24,16 @@
             android:text="@string/shows_title"
             android:textSize="36sp"/>
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userIcon"
             android:layout_width="32dp"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_gravity="end"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
             android:scaleType="centerCrop"
             android:clickable="true"
-            app:civ_border="false"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/default_user"/>
     </Toolbar>
 
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="Your shows are not showing. Get it?"
+        android:text="@string/no_shows_text"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

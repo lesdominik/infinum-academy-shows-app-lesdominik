@@ -11,6 +11,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
+private const val USER_EMAIL = "USER_EMAIL"
+private const val CLIENT = "CLIENT"
+private const val ACCESS_TOKEN = "ACCESS_TOKEN"
+
 class LoginViewModel : ViewModel() {
 
     private val _loginResultLiveData = MutableLiveData<Boolean>()
@@ -37,7 +42,7 @@ class LoginViewModel : ViewModel() {
 
     fun setRememberMeChecked(sharedPreferences: SharedPreferences, isChecked: Boolean) {
         sharedPreferences.edit {
-            putBoolean("REMEMBER_ME_CHECKED", isChecked)
+            putBoolean(REMEMBER_ME_CHECKED, isChecked)
         }
     }
 
@@ -52,9 +57,9 @@ class LoginViewModel : ViewModel() {
                 override fun onResponse(call: Call<LoginAndRegisterResponse>, response: Response<LoginAndRegisterResponse>) {
                     _loginResultLiveData.value = response.isSuccessful
                     sharedPreferences.edit {
-                        putString("ACCESS_TOKEN", response.headers()["access-token"])
-                        putString("CLIENT", response.headers()["client"])
-                        putString("USER_EMAIL", response.body()?.user?.email)
+                        putString(ACCESS_TOKEN, response.headers()["access-token"])
+                        putString(CLIENT, response.headers()["client"])
+                        putString(USER_EMAIL, response.body()?.user?.email)
                     }
                 }
 
