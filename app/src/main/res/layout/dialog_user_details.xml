@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_marginTop="32dp"
+        android:gravity="center"
         android:fontFamily="@font/roboto_medium"
         android:textSize="24dp"
         tools:text="user.name@gmail.com"/>
@@ -48,17 +48,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logoutButton"
+        style="@style/Widget.MaterialComponents.Button.Purple"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="24dp"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/button_purple"
-        android:text="@string/logout_button"
-        android:textAllCaps="false"
-        android:fontFamily="@font/roboto_bold"
-        android:textSize="17sp"
-        android:textColor="@color/white"
-        app:cornerRadius="40dp"/>
+        android:text="@string/logout_button"/>
 
 </LinearLayout>

@@ -10,8 +10,8 @@
         android:id="@+id/showDetailsToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -41,11 +41,11 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         app:indicatorColor="@color/button_purple"
-        app:trackCornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackCornerRadius="8dp"/>
 
     <ScrollView
         android:id="@+id/showDetailsView"
@@ -53,10 +53,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/showDetailsToolbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/reviewButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/reviewButton">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/showDetailsToolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -179,20 +179,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reviewButton"
+        style="@style/Widget.MaterialComponents.Button.Purple"
         android:layout_width="0dp"
-        android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginVertical="16dp"
-        android:backgroundTint="@color/button_purple"
-        android:fontFamily="@font/roboto_bold"
         android:text="@string/review_button"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="17sp"
-        app:cornerRadius="40dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/showDetailsView"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/showDetailsView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

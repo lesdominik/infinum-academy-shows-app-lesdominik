@@ -3,8 +3,6 @@ package com.shows_lesdominik
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,13 +19,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogUserDetailsBinding
 import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import java.io.File
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
@@ -52,7 +47,7 @@ class ShowsFragment : Fragment() {
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
             latestTmpUri?.let { uri ->
-                binding.userIcon.setImageURI(uri)
+                binding.showsToolbar.setUserIconFromUri(uri)
                 bottomSheetBinding.userDetailsImage.setImageURI(uri)
                 viewModel.setProfileImage(requireContext())
             }
@@ -78,9 +73,9 @@ class ShowsFragment : Fragment() {
 
         userEmail = args.userEmail
         if (imageUrl != null) {
-            Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+            binding.showsToolbar.setUserIconFromUrl(imageUrl)
         } else {
-            binding.userIcon.setImageResource(R.drawable.default_user)
+            binding.showsToolbar.setDefaultUserIcon()
         }
 
         if (InternetConnectionUtil.isConnected(requireContext())) {
@@ -89,7 +84,7 @@ class ShowsFragment : Fragment() {
                 if (user != null) {
                     imageUrl = user.imageUrl
                     if (!imageUrl.isNullOrEmpty()) {
-                        Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+                        binding.showsToolbar.setUserIconFromUrl(imageUrl)
                     }
                 }
             }
@@ -101,7 +96,7 @@ class ShowsFragment : Fragment() {
 
 
     private fun initListeners() {
-        binding.userIcon.setOnClickListener {
+        binding.showsToolbar.onUserIconClick {
             showUserDetailsBottomSheet()
         }
     }
