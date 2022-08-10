@@ -19,6 +19,7 @@ import com.shows_lesdominik.databinding.FragmentLoginBinding
 
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 private const val USER_EMAIL = "USER_EMAIL"
+private const val ACCESS_TOKEN = "ACCESS_TOKEN"
 
 class LoginFragment : Fragment() {
 
@@ -54,7 +55,7 @@ class LoginFragment : Fragment() {
 
         if (!sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)) {
             sharedPreferences.edit {
-                remove("ACCESS_TOKEN")
+                remove(ACCESS_TOKEN)
             }
         }
 

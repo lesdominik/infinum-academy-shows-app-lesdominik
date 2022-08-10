@@ -20,6 +20,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogAddReviewBinding
 import com.shows_lesdominik.databinding.FragmentShowDetailsBinding
 
+private const val NO_OF_REVIEWS = "NO_OF_REVIEWS"
+
 class ShowDetailsFragment : Fragment() {
 
     private var _binding: FragmentShowDetailsBinding? = null
@@ -67,7 +69,7 @@ class ShowDetailsFragment : Fragment() {
                 binding.showDetails.text = show.description
 
                 sharedPreferences.edit {
-                    putInt("NO_OF_REVIEWS", show.noOfReviews)
+                    putInt(NO_OF_REVIEWS, show.noOfReviews)
                 }
                 noOfReviews = show.noOfReviews
                 showAvgRating = show.averageRating
@@ -84,7 +86,7 @@ class ShowDetailsFragment : Fragment() {
                 Glide.with(requireContext()).load(showEntity.imageUrl).into(binding.detailsImage)
                 binding.showDetails.text = showEntity.description
 
-                noOfReviews = sharedPreferences.getInt("NO_OF_REVIEWS", showEntity.noOfReviews)
+                noOfReviews = sharedPreferences.getInt(NO_OF_REVIEWS, showEntity.noOfReviews)
                 showAvgRating = showEntity.averageRating
 
                 binding.reviewDetails.text = "$noOfReviews reviews, $showAvgRating average"
@@ -144,9 +146,9 @@ class ShowDetailsFragment : Fragment() {
             if (review != null) {
                 adapter.addItem(review)
 
-                val reviewCount = sharedPreferences.getInt("NO_OF_REVIEWS", noOfReviews)
+                val reviewCount = sharedPreferences.getInt(NO_OF_REVIEWS, noOfReviews)
                 sharedPreferences.edit {
-                    putInt("NO_OF_REVIEWS", reviewCount + 1)
+                    putInt(NO_OF_REVIEWS, reviewCount + 1)
                 }
 
                 binding.reviewDetails.text = "${reviewCount+1} reviews, $showAvgRating average"

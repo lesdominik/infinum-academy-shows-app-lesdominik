@@ -29,6 +29,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import java.io.File
 
+private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
+
 class ShowsFragment : Fragment() {
 
     private var _binding: FragmentShowsBinding? = null
@@ -182,7 +184,7 @@ class ShowsFragment : Fragment() {
         alertDialog.setMessage("Do you really want to log out?")
             .setPositiveButton("Yes") { dialog, _ ->
                 sharedPreferences.edit {
-                    putBoolean("REMEMBER_ME_CHECKED", false)
+                    putBoolean(REMEMBER_ME_CHECKED, false)
                 }
                 findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()

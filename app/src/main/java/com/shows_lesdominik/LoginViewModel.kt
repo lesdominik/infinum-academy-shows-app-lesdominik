@@ -10,6 +10,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+private const val ACCESS_TOKEN = "ACCESS_TOKEN"
+private const val CLIENT = "CLIENT"
+
 class LoginViewModel : ViewModel() {
 
     private val _loginResultLiveData = MutableLiveData<Boolean>()
@@ -30,8 +33,8 @@ class LoginViewModel : ViewModel() {
                 override fun onResponse(call: Call<LoginAndRegisterResponse>, response: Response<LoginAndRegisterResponse>) {
                     _loginResultLiveData.value = response.isSuccessful
                     sharedPreferences.edit {
-                        putString("ACCESS_TOKEN", response.headers()["access-token"])
-                        putString("CLIENT", response.headers()["client"])
+                        putString(ACCESS_TOKEN, response.headers()["access-token"])
+                        putString(CLIENT, response.headers()["client"])
                     }
                 }
 

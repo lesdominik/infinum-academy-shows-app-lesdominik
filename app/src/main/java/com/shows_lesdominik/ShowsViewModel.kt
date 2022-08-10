@@ -19,6 +19,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+private const val USER_EMAIL = "USER_EMAIL"
+
 class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
 
     private val _showsLiveData = MutableLiveData<List<Show>>()
@@ -81,7 +83,7 @@ class ShowsViewModel(private val database: ShowsDatabase) : ViewModel() {
         sharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
 
         val file = FileUtil.getImageFile(context)!!
-        val email = sharedPreferences.getString("USER_EMAIL", "")
+        val email = sharedPreferences.getString(USER_EMAIL, "")
 
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
