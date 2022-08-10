@@ -1,59 +1,92 @@
 package com.shows_lesdominik
 
 import android.content.SharedPreferences
-import android.net.Uri
 import androidx.core.content.edit
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import model.Show
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.Executors
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-private const val URI = "URI"
 private const val REMEMBER_ME_CHECKED = "REMEMBER_ME_CHECKED"
 
 class ShowsViewModel : ViewModel() {
 
-    private val shows = listOf(
-        Show("theOffice","The Office", R.drawable.the_office),
-        Show("strangerThings","Stranger Things", R.drawable.stranger_things),
-        Show("krvNijeVoda","Krv nije voda", R.drawable.krv_nije_voda)
-    )
-
     private val _showsLiveData = MutableLiveData<List<Show>>()
     val showsLiveData: LiveData<List<Show>> = _showsLiveData
 
-    private val _latestTmpUri = MutableLiveData<Uri?>()
-    val latestTmpUri: LiveData<Uri?> = _latestTmpUri
+    private val _userLiveData = MutableLiveData<User>()
+    val userLiveData: LiveData<User> = _userLiveData
 
-    init {
-        _showsLiveData.value = shows
-    }
-
-    fun getLatestTempUri(sharedPreferences: SharedPreferences) {
-        val rememberMe = sharedPreferences.getBoolean(REMEMBER_ME_CHECKED, false)
-        if (!rememberMe) {
-            sharedPreferences.edit {
-                remove(URI)
-            }
-        }
-        var getUriString = sharedPreferences.getString(URI, null)
-        if (getUriString == null) {
-            _latestTmpUri.value = null
-        } else {
-            _latestTmpUri.value = Uri.parse(getUriString)
-        }
-    }
-
-    fun setRememberMeToFalse(sharedPreferences: SharedPreferences) {
+    fun setRememberMeChecked(sharedPreferences: SharedPreferences) {
         sharedPreferences.edit {
             putBoolean(REMEMBER_ME_CHECKED, false)
-            remove(URI)
         }
     }
 
-    fun storeImageUri(sharedPreferences: SharedPreferences, uri: Uri) {
-        sharedPreferences.edit {
-            putString(URI, uri.toString())
-        }
+    fun getShows() {
+        ApiModule.retrofit.getShows()
+            .enqueue(object: Callback<ShowsResponse> {
+                override fun onResponse(call: Call<ShowsResponse>, response: Response<ShowsResponse>) {
+                    if (response.isSuccessful) {
+                        _showsLiveData.value = response.body()?.shows
+                    } else {
+                        _showsLiveData.value = emptyList()
+                    }
+                }
+
+                override fun onFailure(call: Call<ShowsResponse>, t: Throwable) {
+                    _showsLiveData.value = emptyList()
+                }
+
+            })
+    }
+
+    fun getUserInfo() {
+        ApiModule.retrofit.getUserInfo()
+            .enqueue(object: Callback<UserInfoResponse> {
+                override fun onResponse(call: Call<UserInfoResponse>, response: Response<UserInfoResponse>) {
+                    if (response.isSuccessful) {
+                        _userLiveData.value = response.body()?.user
+                    }
+                    _userLiveData.value = null
+                }
+
+                override fun onFailure(call: Call<UserInfoResponse>, t: Throwable) {
+                    _userLiveData.value = null
+                }
+
+            })
+    }
+
+    fun setProfileImage(file: File) {
+        val multipartBody = MultipartBody.Part.createFormData("image", "avatar.jpg",
+            file.asRequestBody("multipart/form-data".toMediaType()))
+
+        ApiModule.retrofit.storeUserImage(multipartBody)
+            .enqueue(object: Callback<StoreImageResponse> {
+                override fun onResponse(call: Call<StoreImageResponse>, response: Response<StoreImageResponse>) {
+                    if (response.isSuccessful) {
+                        Log.i("PUT successful?","image stored successfully")
+                    } else {
+                        Log.i("PUT successful?","nope")
+                    }
+                }
+
+                override fun onFailure(call: Call<StoreImageResponse>, t: Throwable) {
+                    Log.i("PUT successful?","nope")
+                }
+
+            })
     }
 }

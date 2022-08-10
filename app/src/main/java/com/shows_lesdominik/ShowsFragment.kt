@@ -21,9 +21,8 @@ import com.shows_lesdominik.databinding.FragmentShowsBinding
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import java.io.File
-import model.Show
-import ui.ShowsAdapter
 
 class ShowsFragment : Fragment() {
 
@@ -32,25 +31,30 @@ class ShowsFragment : Fragment() {
 
     private lateinit var bottomSheetBinding: DialogUserDetailsBinding
 
-    private lateinit var adapter: ShowsAdapter
     private val args by navArgs<ShowsFragmentArgs>()
-
     private val viewModel by viewModels<ShowsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    private var imageUrl: String? = null
     private var latestTmpUri: Uri? = null
+
     private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
         if (isSuccess) {
             latestTmpUri?.let { uri ->
                 binding.userIcon.setImageURI(uri)
                 bottomSheetBinding.userDetailsImage.setImageURI(uri)
+
+                FileUtil.getImageFile(requireContext())?.let {
+                    viewModel.setProfileImage(it)
+                }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -65,13 +69,15 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getLatestTempUri(sharedPreferences)
-        viewModel.latestTmpUri.observe(viewLifecycleOwner) { latestUri ->
-            if (latestUri == null) {
-                binding.userIcon.setImageResource(R.drawable.default_user)
-            }
-            else {
-                binding.userIcon.setImageURI(latestUri)
+        binding.userIcon.setImageResource(R.drawable.default_user)
+
+        viewModel.getUserInfo()
+        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                imageUrl = user.imageUrl
+                if (!imageUrl.isNullOrEmpty()) {
+                    Glide.with(binding.root).load(imageUrl).into(binding.userIcon)
+                }
             }
         }
 
@@ -79,35 +85,31 @@ class ShowsFragment : Fragment() {
         initListeners()
     }
 
-    private fun initListeners() {
 
-        binding.toggleButton.addOnButtonCheckedListener { _, _, isChecked ->
-            if (isChecked) {
+    private fun initListeners() {
+        binding.userIcon.setOnClickListener {
+            showUserDetailsBottomSheet()
+        }
+    }
+
+    private fun initShowsRecycler() {
+        viewModel.getShows()
+        viewModel.showsLiveData.observe(viewLifecycleOwner) { shows ->
+            binding.loadingShows.isVisible = false
+            if (shows.isEmpty()) {
                 binding.showsRecycler.isVisible = false
                 binding.noShowsView.isVisible = true
             } else {
                 binding.showsRecycler.isVisible = true
                 binding.noShowsView.isVisible = false
+
+                binding.showsRecycler.adapter = ShowsAdapter(shows) { show ->
+                    val directions = ShowsFragmentDirections.toFragmentShowDetails(show.id, args.userEmail)
+                    findNavController().navigate(directions)
+                }
+                binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
             }
         }
-
-        binding.userIcon.setOnClickListener {
-            showUserDetailsBottomSheet()
-        }
-
-    }
-
-    private fun initShowsRecycler() {
-        viewModel.showsLiveData.observe(viewLifecycleOwner) {shows ->
-            adapter = ShowsAdapter(shows) { show ->
-                val directions = ShowsFragmentDirections.toFragmentShowDetails(show.name, show.imageResourceId, show.description, args.userEmail)
-                findNavController().navigate(directions)
-            }
-            binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext())
-
-            binding.showsRecycler.adapter = adapter
-        }
-
     }
 
     private fun showUserDetailsBottomSheet() {
@@ -118,11 +120,10 @@ class ShowsFragment : Fragment() {
 
         bottomSheetBinding.userEmail.text = args.userEmail
 
-        if (latestTmpUri == null) {
-            bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
-        }
-        else {
-            bottomSheetBinding.userDetailsImage.setImageURI(latestTmpUri)
+        when {
+            latestTmpUri != null -> bottomSheetBinding.userDetailsImage.setImageURI(latestTmpUri)
+            imageUrl != null -> Glide.with(bottomSheetBinding.root).load(imageUrl).into(bottomSheetBinding.userDetailsImage)
+            else -> bottomSheetBinding.userDetailsImage.setImageResource(R.drawable.default_user)
         }
 
 
@@ -141,10 +142,9 @@ class ShowsFragment : Fragment() {
     private fun showAlertDialog() {
         val alertDialog = AlertDialog.Builder(requireContext())
 
-        alertDialog.setMessage("Do you really want to log out?")
+        alertDialog.setMessage(getString(R.string.logout_alert_dialog_message))
             .setPositiveButton("Yes") { dialog, _ ->
-                viewModel.setRememberMeToFalse(sharedPreferences)
-
+                viewModel.setRememberMeChecked(sharedPreferences)
                 findNavController().navigate(R.id.toLoginFragment)
                 dialog.dismiss()
             }
@@ -159,21 +159,20 @@ class ShowsFragment : Fragment() {
     private fun takeImage() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
-                viewModel.storeImageUri(sharedPreferences, uri)
-
                 latestTmpUri = uri
                 takeImageResult.launch(uri)
             }
         }
     }
 
-    private fun getTmpFileUri(): Uri {
-        val tmpFile = File.createTempFile("tmp_image_file", ".png").apply {
-            createNewFile()
-            deleteOnExit()
-        }
+    private fun getTmpFileUri(): Uri? {
+        val file = FileUtil.createImageFile(requireContext())
 
-        return FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
+        return if (file != null) {
+            FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", file)
+        } else {
+            null
+        }
     }
 
 

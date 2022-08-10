@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ApiModule.initRetrofit(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }

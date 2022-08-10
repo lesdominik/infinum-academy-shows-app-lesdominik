@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
@@ -9,9 +10,30 @@
         android:name="com.shows_lesdominik.LoginFragment"
         tools:layout="@layout/fragment_login">
 
+        <argument
+            android:name="afterRegistration"
+            android:defaultValue="false"
+            app:argType="boolean"/>
+
         <action
             android:id="@+id/toShowsFragment"
             app:destination="@id/showsFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/toRegisterFragment"
+            app:destination="@id/registerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.shows_lesdominik.RegisterFragment"
+        tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/toLoginFragment"
+            app:destination="@id/loginFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -42,15 +64,7 @@
         tools:layout="@layout/fragment_show_details">
 
         <argument
-            android:name="showName"
-            app:argType="string"/>
-
-        <argument
-            android:name="pictureId"
-            app:argType="integer"/>
-
-        <argument
-            android:name="details"
+            android:name="showId"
             app:argType="string"/>
 
         <argument

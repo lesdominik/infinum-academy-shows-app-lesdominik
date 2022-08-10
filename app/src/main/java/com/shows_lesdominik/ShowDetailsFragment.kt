@@ -2,7 +2,6 @@ package com.shows_lesdominik
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,12 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.shows_lesdominik.databinding.DialogAddReviewBinding
 import com.shows_lesdominik.databinding.FragmentShowDetailsBinding
-import com.shows_lesdominik.databinding.FragmentShowsBinding
-import model.Review
-import ui.ReviewsAdapter
 
 class ShowDetailsFragment : Fragment() {
 
@@ -28,13 +25,14 @@ class ShowDetailsFragment : Fragment() {
 
     private lateinit var adapter: ReviewsAdapter
     private val args by navArgs<ShowDetailsFragmentArgs>()
+    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -49,12 +47,19 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setShowDetails(args.showName, args.pictureId, args.details)
-
+        viewModel.getShowDetails(args.showId)
         viewModel.showDetailsLiveData.observe(viewLifecycleOwner) { show ->
-            binding.showDetailsToolbar.title = show.name
-            binding.detailsImage.setImageResource(show.imageResourceId)
+            binding.showDetailsToolbar.title = show.title
+            Glide.with(requireContext()).load(show.imageUrl).into(binding.detailsImage)
             binding.showDetails.text = show.description
+
+            if (show.averageRating != null) {
+                binding.reviewDetails.text = getString(R.string.reviewDetails, show.noOfReviews, show.averageRating)
+                binding.reviewRatingBar.rating = show.averageRating
+            }
+
+            binding.loadingShowDetails.isVisible = false
+            binding.showDetailsGroup.isVisible = true
         }
 
         initReviewsRecycler()
@@ -62,17 +67,29 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
+        viewModel.getShowReviews(args.showId)
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviews ->
-            adapter = ReviewsAdapter(reviews)
+            if (reviews.isEmpty()) {
+                binding.noReviewsText.isVisible = true
+                binding.reviewsGroup.isVisible = false
+            } else {
+                binding.noReviewsText.isVisible = false
+                binding.reviewsGroup.isVisible = true
 
-            binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
-            binding.reviewRecycle.adapter = adapter
+                adapter = ReviewsAdapter(reviews)
+                binding.reviewRecycle.adapter = adapter
+                binding.reviewRecycle.layoutManager = LinearLayoutManager(requireContext())
 
-            binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                binding.reviewRecycle.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            }
         }
 
-        viewModel.createdReviewLiveData.observe(viewLifecycleOwner) { review ->
-            adapter.addItem(review)
+        viewModel.newReviewLiveData.observe(viewLifecycleOwner) { review ->
+            if (review != null) {
+                adapter.addItem(review)
+
+                binding.reviewDetails.text = getString(R.string.reviewDetails, viewModel.getNoOfReviews(), viewModel.getShowAvgRating())
+            }
         }
     }
 
@@ -102,23 +119,12 @@ class ShowDetailsFragment : Fragment() {
         }
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            addReviewToList(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString())
+            viewModel.addReview(bottomSheetBinding.showRatingBar.rating.toInt(), bottomSheetBinding.commentEdiText.text.toString().trim(), args.showId)
             dialog.dismiss()
         }
 
         dialog.show()
     }
-
-    private fun addReviewToList(rating: Int, comment: String?) = with(binding) {
-        viewModel.createReview(sharedPreferences, args.userEmail, rating, comment)
-
-        noReviewsText.isVisible = false
-        reviewVisibilityGroup.isVisible = true
-
-        reviewDetails.text = "${adapter.itemCount} reviews, ${adapter.getAverageRating()} average"
-        reviewRatingBar.rating = adapter.getAverageRating().toFloat()
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

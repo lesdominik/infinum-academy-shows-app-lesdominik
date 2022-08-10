@@ -1,46 +1,91 @@
 package com.shows_lesdominik
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import model.Review
-import model.Show
-
-private const val URI = "URI"
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ShowDetailsViewModel : ViewModel() {
-
-    private val reviews = emptyList<Review>()
 
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
 
-    private val _createdReviewLiveData = MutableLiveData<Review>()
-    val createdReviewLiveData: LiveData<Review> = _createdReviewLiveData
+    private val _newReviewLiveData = MutableLiveData<Review>()
+    val newReviewLiveData: LiveData<Review> = _newReviewLiveData
 
     private val _showDetailsLiveData = MutableLiveData<Show>()
     val showDetailsLiveData: LiveData<Show> = _showDetailsLiveData
 
+    private var noOfReviews: Int? = null
+    private var showAvgRating: Float? = null
 
-    init {
-        _reviewsLiveData.value = reviews
+
+    fun getNoOfReviews() = noOfReviews
+
+    fun getShowAvgRating() = showAvgRating
+
+    fun getShowDetails(showId: String) {
+        ApiModule.retrofit.getShowDetails(showId)
+            .enqueue(object: Callback<ShowDetailsResponse> {
+                override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
+                    if (response.isSuccessful) {
+                        _showDetailsLiveData.value = response.body()?.show
+                        noOfReviews = response.body()?.show?.noOfReviews
+                        showAvgRating = response.body()?.show?.averageRating
+                    } else {
+                        _showDetailsLiveData.value = null
+                    }
+                }
+
+                override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
+                    _showDetailsLiveData.value = null
+                }
+
+            })
     }
 
-    fun setShowDetails(name: String, imageResourceId: Int, description: String) {
-        _showDetailsLiveData.value = Show(name, name, imageResourceId, description)
+    fun getShowReviews(showId: String) {
+        ApiModule.retrofit.getShowReviews(showId)
+            .enqueue(object: Callback<ReviewListResponse> {
+                override fun onResponse(call: Call<ReviewListResponse>, response: Response<ReviewListResponse>) {
+                    if (response.isSuccessful) {
+                        _reviewsLiveData.value = response.body()?.reviews
+                    } else {
+                        _reviewsLiveData.value = emptyList()
+                    }
+                }
+
+                override fun onFailure(call: Call<ReviewListResponse>, t: Throwable) {
+                    _reviewsLiveData.value = emptyList()
+                }
+
+            })
     }
 
-    fun createReview(sharedPreferences: SharedPreferences, userEmail: String, rating: Int, comment: String?){
-        var userImageUri = sharedPreferences.getString(URI, null)
-        if (userImageUri.isNullOrEmpty()) {
-            userImageUri = "android.resource://com.shows_lesdominik/" + R.drawable.default_user
-        }
+    fun addReview(rating: Int, comment: String?, showId: String) {
+        val reviewCreateRequest = ReviewCreateRequest(
+            rating = rating,
+            comment = comment,
+            showId = showId.toInt()
+        )
 
-        val splitEmail = userEmail.split("@")
-        val username = splitEmail[0]
+        noOfReviews = noOfReviews?.plus(1)
 
-        _createdReviewLiveData.value = Review(username, userImageUri, rating, comment)
+        ApiModule.retrofit.createShowReview(reviewCreateRequest)
+            .enqueue(object: Callback<ReviewCreateResponse> {
+                override fun onResponse(call: Call<ReviewCreateResponse>, response: Response<ReviewCreateResponse>) {
+                    if (response.isSuccessful) {
+                        _newReviewLiveData.value = response.body()?.review
+                    }
+                    _newReviewLiveData.value = null
+                }
+
+                override fun onFailure(call: Call<ReviewCreateResponse>, t: Throwable) {
+                    _newReviewLiveData.value = null
+                }
+
+            })
     }
 }

@@ -2,6 +2,7 @@ package com.shows_lesdominik
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
@@ -9,9 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.shows_lesdominik.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -19,6 +22,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() =_binding!!
 
+    private val args by navArgs<LoginFragmentArgs>()
     private val viewModel by viewModels<LoginViewModel>()
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -26,6 +30,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         sharedPreferences = requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 
@@ -41,56 +46,69 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getUserEmail(sharedPreferences)
-        viewModel.userEmail.observe(viewLifecycleOwner) { userEmail ->
-            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
-            findNavController().navigate(directions)
+        viewModel.userEmailLiveData.observe(viewLifecycleOwner) { userEmail ->
+            if (userEmail.isNotEmpty()) {
+                val directions = LoginFragmentDirections.toShowsFragment(userEmail)
+                findNavController().navigate(directions)
+            }
+        }
+
+        if (args.afterRegistration) {
+            binding.title.text = getString(R.string.registration_successful)
+            binding.registerTextButton.isVisible = false
+        }
+
+        viewModel.loginResultLiveData.observe(viewLifecycleOwner) { loginSuccessful ->
+            afterLoginValidation(loginSuccessful)
+            binding.loginGroup.isVisible = true
+            binding.loadingLogin.isVisible = false
         }
 
         initListeners()
+        initLoginButton()
+    }
+
+    private fun afterLoginValidation(loginSuccessful: Boolean) = with(binding) {
+        if (loginSuccessful) {
+            val userEmail = emailEdiText.text.toString()
+            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
+            findNavController().navigate(directions)
+        } else {
+            loginButton.isEnabled = false
+            emailEdiText.setText("")
+            passwordEditText.setText("")
+            message.text = getString(R.string.login_failed)
+            message.setTextColor(Color.RED)
+        }
+    }
+
+    private fun initLoginButton() = with(binding) {
+        loginButton.setOnClickListener {
+            binding.loginGroup.isVisible = false
+            binding.loadingLogin.isVisible = true
+            viewModel.onLoginButtonClicked(
+                sharedPreferences,
+                email = emailEdiText.text.toString(),
+                password = passwordEditText.text.toString(),
+                context = requireContext()
+            )
+        }
     }
 
     private fun initListeners() {
-
-        var emailCorrect = false
-        var passwordCorrect = false
-
         binding.emailEdiText.doAfterTextChanged { email ->
-
-            when {
-                email.toString().isEmpty() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = false
-                }
-                Patterns.EMAIL_ADDRESS.matcher(email.toString()).matches() -> {
-                    binding.emailTextField.error = null
-                    emailCorrect = true
-                }
-                else -> {
-                    binding.emailTextField.error = "Invalid email address"
-                    emailCorrect = false
-                }
+            viewModel.emailValidation(email.toString())
+            viewModel.isLoginButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.loginButton.isEnabled = isEnabled
             }
-            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
 
         binding.passwordEditText.doAfterTextChanged { password ->
-
-            when {
-                password.toString().isEmpty() -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = false
-                }
-                password.toString().length < 6 -> {
-                    binding.passwordTextField.error = "Minimum password length is 6 characters"
-                    passwordCorrect = false
-                }
-                else -> {
-                    binding.passwordTextField.error = null
-                    passwordCorrect = true
-                }
+            viewModel.passwordValidation(password.toString())
+            viewModel.isLoginButtonEnabledLiveData.observe(viewLifecycleOwner) { isEnabled ->
+                binding.loginButton.isEnabled = isEnabled
             }
-            binding.loginButton.isEnabled = emailCorrect && passwordCorrect
         }
 
 
@@ -99,16 +117,11 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.loginButton.setOnClickListener {
-            val userEmail = binding.emailEdiText.text.toString()
-            viewModel.storeUserEmail(sharedPreferences, userEmail)
-
-            val directions = LoginFragmentDirections.toShowsFragment(userEmail)
-            findNavController().navigate(directions)
+        binding.registerTextButton.setOnClickListener {
+            findNavController().navigate(R.id.toRegisterFragment)
         }
 
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -1,13 +1,12 @@
-package ui
+package com.shows_lesdominik
 
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.shows_lesdominik.databinding.ItemReviewBinding
-import model.Review
-import java.text.DecimalFormat
 
 class ReviewsAdapter(
     private var items: List<Review>
@@ -24,21 +23,22 @@ class ReviewsAdapter(
 
     override fun getItemCount() = items.count()
 
-    fun getAverageRating(): String {
-        val average = items.sumOf { it.rating }.toDouble().div(items.count())
-        return "%.2f".format(average)
-    }
-
     fun addItem(review: Review) {
-        items = items + review
-        notifyItemInserted(items.lastIndex)
+        items = listOf<Review>(review) + items
+        notifyItemInserted(0)
     }
 
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Review) {
-            binding.userName.text = item.user
-            binding.userImage.setImageURI(Uri.parse(item.userImageUriString))
+            if (item.user.imageUrl.isNullOrEmpty()) {
+                binding.userImage.setImageResource(R.drawable.default_user)
+            } else {
+                Glide.with(binding.root).load(item.user.imageUrl).into(binding.userImage)
+            }
+
+            val splitEmail = item.user.email.split("@")
+            binding.userName.text = splitEmail[0]
             binding.showRating.text = item.rating.toString()
 
             if (item.comment.isNullOrEmpty()) {
